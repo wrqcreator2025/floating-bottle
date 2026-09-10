@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#bfe9f1">
+  <title>漂流瓶 · 漂流海域</title>
+  <style>
+    :root{
+      --ink:#183b46;--muted:#66848b;--blue:#2b8da3;--deep:#176478;--aqua:#bfe9f1;
+      --foam:#f7ffff;--paper:#fffdf4;--coral:#ff755e;--yellow:#ffc85a;--line:rgba(24,59,70,.13);
+      --shadow:0 18px 50px rgba(31,99,113,.18);--safe:env(safe-area-inset-bottom,0px)
+    }
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink)}
+    body{background:#dff3f4;overflow-x:hidden}button,textarea,input{font:inherit;color:inherit}button{cursor:pointer}.hidden,[hidden]{display:none!important}
+    button:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid rgba(255,117,94,.55);outline-offset:3px}
+
+    .app{width:min(100%,520px);min-height:100svh;margin:auto;background:linear-gradient(#dbf4f5 0 18%,#9edee9 48%,#48acc0 100%);position:relative;overflow:hidden;box-shadow:0 0 80px rgba(17,82,98,.18)}
+    .sky-glow{position:absolute;width:370px;height:370px;border-radius:50%;background:rgba(255,255,244,.34);filter:blur(4px);top:-205px;left:-80px;pointer-events:none}
+    .top{position:relative;z-index:10;padding:calc(14px + env(safe-area-inset-top,0px)) 18px 8px}
+    .mini-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}.brand{font-size:17px;font-weight:800;letter-spacing:.04em}.brand small{display:block;font-size:9px;letter-spacing:.24em;font-weight:600;color:var(--muted);margin-top:2px}.avatar{width:35px;height:35px;border:0;border-radius:50%;background:rgba(255,255,255,.72);box-shadow:0 5px 15px rgba(31,99,113,.12);font-weight:700}
+    .signals{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}.signal{border:0;border-radius:13px;padding:9px 9px 8px;text-align:left;background:rgba(255,255,255,.48);backdrop-filter:blur(10px);min-width:0;position:relative}.signal span{display:block;font-size:9px;color:#66838b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.signal strong{display:block;font-size:11px;margin-top:5px;font-weight:700;white-space:nowrap}.bar{height:3px;border-radius:8px;background:rgba(24,59,70,.1);margin-top:7px;overflow:hidden}.bar i{display:block;height:100%;width:72%;border-radius:inherit;background:var(--blue)}.signal:nth-child(2) .bar i{width:46%;background:var(--yellow)}.signal:nth-child(3) .bar i{width:100%;background:var(--coral)}
+    .dot{position:absolute;right:8px;top:7px;width:8px;height:8px;background:#ff4e43;border-radius:50%;box-shadow:0 0 0 3px rgba(255,255,255,.8);animation:pulse 1.8s infinite}
+
+    .sea{position:relative;min-height:calc(100svh - 152px);padding:7px 18px 112px}.sea:before,.sea:after{content:"";position:absolute;left:-20%;width:140%;height:100px;border-radius:50%;border-top:1px solid rgba(255,255,255,.35);pointer-events:none}.sea:before{top:100px;transform:rotate(-3deg)}.sea:after{top:285px;transform:rotate(4deg)}
+    .sea-head{position:relative;z-index:3;display:flex;justify-content:space-between;align-items:end;margin:7px 1px}.sea-head h1{font-size:22px;line-height:1.25;margin:0}.sea-head p{font-size:10px;color:#477784;margin:4px 0 0}.online{font-size:10px;background:rgba(255,255,255,.48);padding:5px 9px;border-radius:30px}.online:before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#43aa78;margin-right:5px}
+    .ocean-map{height:470px;position:relative;margin-top:2px;isolation:isolate}.current{position:absolute;border:1px solid rgba(255,255,255,.2);border-width:1px 0;border-radius:50%;height:62px;width:340px;left:50%;transform:translateX(-50%) rotate(-8deg);top:192px;opacity:.65}.current:after{content:"";position:absolute;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.8);left:38px;top:13px;box-shadow:190px 35px 0 rgba(255,255,255,.65),265px 10px 0 rgba(255,255,255,.5)}
+    .bottle{position:absolute;width:38px;height:74px;border:0;background:transparent;padding:0;filter:drop-shadow(0 9px 6px rgba(19,91,107,.2));animation:drift 5.4s ease-in-out infinite;z-index:2}.bottle .glass{position:absolute;inset:13px 5px 2px;border:2px solid rgba(238,255,255,.9);background:linear-gradient(105deg,rgba(255,255,255,.65),rgba(93,198,210,.2));border-radius:7px 7px 12px 12px;transform:rotate(var(--tilt,0deg))}.bottle .glass:before{content:"";position:absolute;width:13px;height:15px;border:2px solid rgba(238,255,255,.9);border-bottom:0;top:-14px;left:6px;border-radius:3px 3px 0 0;background:rgba(255,255,255,.25)}.bottle .glass:after{content:"";position:absolute;left:4px;right:4px;height:22px;top:16px;background:var(--label,#fff5cf);border-radius:2px;box-shadow:0 1px 0 rgba(0,0,0,.08)}.bottle .cap{position:absolute;width:17px;height:6px;background:#8b6c4e;border-radius:2px;top:8px;left:10px;z-index:2;transform:rotate(var(--tilt,0deg))}
+    .bottle .deco{position:absolute;z-index:4;font-size:13px;right:-2px;top:30px;transform:rotate(12deg)}.bottle[data-kind="star"] .deco:before{content:"✦";color:#ffce65}.bottle[data-kind="leaf"] .deco:before{content:"❧";color:#4b9b75}.bottle[data-kind="heart"] .deco:before{content:"♥";color:#ff7b76}.bottle[data-kind="moon"] .deco:before{content:"☾";color:#766cb3}.bottle:hover,.bottle:focus-visible{filter:drop-shadow(0 12px 9px rgba(19,91,107,.3));z-index:5}.bottle:hover .glass{background:rgba(255,255,255,.5)}
+    .b1{left:8%;top:85px;--tilt:-13deg;animation-delay:-1.2s}.b2{right:12%;top:58px;--tilt:10deg;animation-delay:-3.7s;transform:scale(.88)}.b3{left:20%;top:255px;--tilt:8deg;animation-delay:-2.2s;transform:scale(.8)}.b4{right:22%;top:305px;--tilt:-9deg;animation-delay:-.4s;transform:scale(.92)}.b5{right:3%;top:206px;--tilt:15deg;animation-delay:-4.5s;transform:scale(.72)}
+    .bottle-label{position:absolute;font-size:9px;color:rgba(24,59,70,.75);background:rgba(255,255,255,.55);padding:3px 7px;border-radius:20px;white-space:nowrap;left:50%;transform:translateX(-50%);top:74px;opacity:0;transition:.2s}.bottle:hover .bottle-label,.bottle:focus-visible .bottle-label{opacity:1}
+    .hero-bottle{position:absolute;z-index:4;left:50%;top:145px;transform:translateX(-50%);text-align:center}.hero-bottle .bottle{position:relative;left:auto;top:auto;width:49px;height:92px;margin:auto;animation:heroFloat 3.2s ease-in-out infinite}.hero-bottle .bottle .glass{inset:17px 5px 2px}.hero-bottle .bottle .glass:before{width:17px;height:18px;top:-17px;left:7px}.hero-bottle .bottle .cap{width:21px;left:14px;top:10px}.hero-bottle p{font-size:10px;color:#246777;background:rgba(255,255,255,.55);padding:4px 9px;border-radius:20px;margin:8px 0}.hero-bottle strong{font-size:12px}
+    .hint{position:absolute;bottom:11px;left:0;right:0;text-align:center;font-size:10px;color:rgba(24,59,70,.68)}
+
+    .dock{position:absolute;z-index:15;bottom:calc(12px + var(--safe));left:14px;right:14px;height:78px;padding:8px 10px;border-radius:24px;background:rgba(248,255,255,.83);backdrop-filter:blur(18px);box-shadow:0 12px 38px rgba(19,87,101,.24);display:grid;grid-template-columns:repeat(4,1fr);gap:4px}.dock button{border:0;background:transparent;border-radius:16px;font-size:10px;position:relative;padding:5px 2px;color:#55777f}.dock .ico{width:31px;height:31px;border-radius:10px;background:#e6f4f3;display:grid;place-items:center;margin:0 auto 3px;font-size:16px;color:var(--deep)}.dock .compose{color:var(--ink);font-weight:700}.dock .compose .ico{background:var(--coral);color:white;box-shadow:0 7px 15px rgba(255,117,94,.28);transform:translateY(-5px)}.dock .red{position:absolute;right:13px;top:2px;width:7px;height:7px;background:#ff4e43;border-radius:50%;border:1px solid white}
+
+    dialog{border:0;padding:0;color:var(--ink);box-shadow:var(--shadow)}dialog::backdrop{background:rgba(14,52,61,.38);backdrop-filter:blur(3px)}.sheet{width:min(100% - 20px,500px);max-height:87svh;margin:auto auto 0;border-radius:26px 26px 0 0;background:#f8ffff;overflow:auto}.sheet-inner{padding:9px 20px calc(24px + var(--safe))}.grab{width:38px;height:4px;border-radius:9px;background:#cadcde;margin:2px auto 17px}.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}.sheet-head h2{font-size:20px;margin:0}.close{width:32px;height:32px;border:0;border-radius:50%;background:#e8f2f2;font-size:18px}.sub{font-size:11px;color:var(--muted);margin:-9px 0 17px}.label{display:block;font-size:12px;font-weight:700;margin:15px 0 7px}textarea,input{width:100%;border:1px solid var(--line);background:white;border-radius:14px;padding:12px;outline:0}textarea{min-height:112px;resize:vertical;line-height:1.7}.chips{display:flex;gap:7px;flex-wrap:wrap}.chip{border:1px solid #c5e2e5;background:white;color:#527981;border-radius:20px;padding:7px 11px;font-size:11px}.chip[aria-pressed="true"]{background:#def4ef;color:#156b62;border-color:#70bbae;font-weight:700}.generate{width:100%;border:1px dashed #87bcc5;background:#edfafa;border-radius:13px;padding:10px;margin-top:11px;font-size:12px;color:var(--deep)}.primary{width:100%;border:0;border-radius:14px;background:var(--deep);color:white;padding:13px;margin-top:17px;font-weight:700}.muted-note{font-size:10px;color:#789098;text-align:center}.error{font-size:11px;color:#d04e3d;min-height:18px;margin:6px 0 0}
+    .cab-tabs{display:flex;background:#e9f3f3;border-radius:12px;padding:3px;margin-bottom:14px}.cab-tabs button{flex:1;border:0;background:transparent;border-radius:9px;padding:8px;font-size:11px}.cab-tabs button.active{background:white;box-shadow:0 3px 9px rgba(35,91,101,.1);font-weight:700}.cabinet-grid{display:grid;grid-template-columns:repeat(3,1fr);border:7px solid #9e7659;background:#d2a57c;gap:6px;padding:6px;border-radius:12px;box-shadow:inset 0 0 0 2px #805b43}.slot{height:105px;background:linear-gradient(135deg,#f7e1bd,#c99469);border:0;box-shadow:inset 0 8px 16px rgba(93,55,31,.16);position:relative;display:grid;place-items:center;border-radius:2px}.slot .mini{width:28px;height:58px;border:2px solid rgba(255,255,255,.88);border-radius:5px 5px 9px 9px;position:relative;background:rgba(152,224,228,.35);transform:rotate(var(--r,0deg));filter:drop-shadow(2px 5px 3px rgba(73,46,29,.2))}.slot .mini:before{content:"";position:absolute;width:12px;height:11px;border:2px solid white;border-bottom:0;left:6px;top:-12px}.slot .mini:after{content:attr(data-mark);position:absolute;left:3px;right:3px;top:20px;background:var(--label,#fff2c7);font-size:10px;padding:4px 0;text-align:center}.slot.add{background:rgba(255,255,255,.34);font-size:11px;color:#6d4934}.slot.add b{display:block;font-size:25px}.pager{display:flex;align-items:center;justify-content:center;gap:15px;margin-top:14px;font-size:11px;color:var(--muted)}.pager button{width:32px;height:32px;border:1px solid var(--line);background:white;border-radius:50%}.pager button:disabled{opacity:.35}
+    .letter-card{background:var(--paper);border:1px solid #eadfc4;border-radius:17px;padding:19px;box-shadow:0 8px 22px rgba(99,79,38,.08)}.letter-card .stamp{font-size:9px;letter-spacing:.16em;color:#bb745f}.letter-card h3{font-family:Georgia,"Songti SC",serif;font-size:20px;line-height:1.5}.letter-card p{font-family:Georgia,"Songti SC",serif;line-height:1.9;font-size:13px;color:#4c5c57}.reply-tag{display:inline-block;padding:5px 8px;border-radius:8px;background:#e6f3e8;font-size:10px;color:#487156}.experience-list{display:grid;gap:9px}.experience{border:1px solid var(--line);background:white;border-radius:13px;padding:13px}.experience strong{display:block;font-size:13px}.experience span{font-size:10px;color:var(--muted)}
+    .toast{position:fixed;z-index:100;left:50%;bottom:112px;transform:translateX(-50%);width:max-content;max-width:calc(100% - 32px);background:#173f49;color:white;border-radius:30px;padding:10px 15px;font-size:11px;box-shadow:var(--shadow)}
+    .flying{position:fixed!important;z-index:80!important;left:50%!important;top:62%!important;animation:toss 1.65s cubic-bezier(.2,.75,.25,1) forwards!important;pointer-events:none}
+    @keyframes drift{0%,100%{margin-top:0;margin-left:0}45%{margin-top:-9px;margin-left:5px}70%{margin-top:-3px;margin-left:-3px}}@keyframes heroFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(3deg)}}@keyframes pulse{50%{transform:scale(.72);opacity:.65}}@keyframes toss{0%{transform:translate(-50%,0) scale(1.35) rotate(0);opacity:1}50%{transform:translate(35vw,-34vh) scale(.8) rotate(45deg);opacity:1}100%{transform:translate(44vw,-45vh) scale(.18) rotate(130deg);opacity:0}}
+    @media(min-width:700px){body{padding:18px}.app{min-height:calc(100svh - 36px);border-radius:30px}.dock{bottom:20px}.sheet{margin:auto;border-radius:26px;max-height:min(780px,90svh)}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+<main class="app">
+  <div class="sky-glow"></div>
+  <header class="top">
+    <div class="mini-head"><div class="brand">漂流瓶<small>EVERY STORY DRIFTS</small></div><button class="avatar" aria-label="我的资料">禾</button></div>
+    <div class="signals" aria-label="今日状态">
+      <button class="signal" data-open="experience"><span>今日活跃度</span><strong>海风正好 · 72%</strong><div class="bar"><i></i></div></button>
+      <button class="signal" data-open="cabinet"><span>投放中的瓶子</span><strong id="throw-count">2 只漂流中</strong><div class="bar"><i></i></div></button>
+      <button class="signal" data-open="reply"><i class="dot unread-dot"></i><span>新的回音</span><strong>1 封待拆</strong><div class="bar"><i></i></div></button>
+    </div>
+  </header>
+
+  <section class="sea" aria-labelledby="sea-title">
+    <div class="sea-head"><div><h1 id="sea-title">今天的漂流海域</h1><p>点一点，看看别人正在经历哪一集</p></div><span class="online">23 人漂流中</span></div>
+    <div class="ocean-map" id="ocean-map">
+      <div class="current"></div>
+      <button class="bottle b1" data-kind="star" data-story="第一次离开家去外地工作，怎么适应一个人的生活？"><i class="cap"></i><i class="glass"></i><i class="deco"></i><span class="bottle-label">关于第一次远行</span></button>
+      <button class="bottle b2" data-kind="leaf" data-story="准备了一年考研，却开始怀疑这是不是我真正想走的路。"><i class="cap"></i><i class="glass"></i><i class="deco"></i><span class="bottle-label">关于改变方向</span></button>
+      <button class="bottle b3" data-kind="heart" data-story="和很好的朋友渐渐走远，我不知道该挽回还是接受。"><i class="cap"></i><i class="glass"></i><i class="deco"></i><span class="bottle-label">关于一段友情</span></button>
+      <button class="bottle b4" data-kind="moon" data-story="第一次实习总在犯错，开始怀疑自己是不是不适合这份工作。"><i class="cap"></i><i class="glass"></i><i class="deco"></i><span class="bottle-label">关于第一份实习</span></button>
+      <button class="bottle b5" data-kind="star" data-story="毕业前突然很迷茫，好像每个选择都会错过另一种人生。"><i class="cap"></i><i class="glass"></i><i class="deco"></i><span class="bottle-label">关于毕业选择</span></button>
+      <div class="hero-bottle">
+        <button class="bottle" id="new-bottle" aria-label="写一只新的漂流瓶"><i class="cap"></i><i class="glass"></i><i class="deco"></i></button>
+        <p>你的空瓶子</p><strong>写下这一集 ↗</strong>
+      </div>
+      <p class="hint">海里的故事均为演示内容 · 点击瓶子只会在本地打开</p>
+    </div>
+  </section>
+
+  <nav class="dock" aria-label="功能入口">
+    <button><span class="ico">≈</span>海域</button>
+    <button data-open="cabinet"><span class="ico">▦</span>瓶子柜</button>
+    <button class="compose" data-open="composer"><span class="ico">＋</span>投一个</button>
+    <button data-open="reply"><i class="red unread-dot"></i><span class="ico">✉</span>回信</button>
+  </nav>
+</main>
+
+<dialog class="sheet" id="composer">
+  <div class="sheet-inner"><div class="grab"></div><div class="sheet-head"><h2>把这一集装进瓶子</h2><button class="close" data-close aria-label="关闭">×</button></div>
+    <p class="sub">先选几个标签，也可以直接写。AI 示例只帮你组织表达。</p>
+    <span class="label">此刻更接近哪一种经历？</span>
+    <div class="chips" id="chips">
+      <button class="chip" aria-pressed="false">第一次尝试</button><button class="chip" aria-pressed="false">选择与迷茫</button><button class="chip" aria-pressed="false">学业压力</button><button class="chip" aria-pressed="false">实习求职</button><button class="chip" aria-pressed="false">关系变化</button><button class="chip" aria-pressed="false">离开与重新开始</button>
+    </div>
+    <button class="generate" id="generate">✦ 根据已选标签生成经历描述</button>
+    <label class="label" for="story">最近，你正在经历什么？</label><textarea id="story" maxlength="500" placeholder="不需要把它写成一个标准问题，从真实发生的事开始就好……"></textarea>
+    <label class="label" for="wanted">想听怎样的过来人说说？</label><input id="wanted" maxlength="160" placeholder="例如：也曾从技术转向产品的人">
+    <p class="error" id="compose-error" role="status"></p><button class="primary" id="throw">封好瓶子，抛向海里</button><p class="muted-note">演示内容仅保存在当前浏览器，不会真实发布</p>
+  </div>
+</dialog>
+
+<dialog class="sheet" id="cabinet">
+  <div class="sheet-inner"><div class="grab"></div><div class="sheet-head"><h2>我的瓶子柜</h2><button class="close" data-close aria-label="关闭">×</button></div>
+    <div class="cab-tabs"><button class="active" data-tab="out">我抛出的</button><button data-tab="in">我捡到的</button></div>
+    <div class="cabinet-grid" id="cabinet-grid"></div>
+    <div class="pager"><button id="prev" aria-label="上一页">←</button><span id="page">第 1 / 1 页</span><button id="next" aria-label="下一页">→</button></div>
+    <p class="muted-note">每页 5 只瓶子；点击格子查看内容，空格可以继续添加</p>
+  </div>
+</dialog>
+
+<dialog class="sheet" id="reply">
+  <div class="sheet-inner"><div class="grab"></div><div class="sheet-head"><h2>漂回来的回信</h2><button class="close" data-close aria-label="关闭">×</button></div>
+    <article class="letter-card"><span class="stamp">A REPLY FOR YOUR STORY</span><h3>“你不需要等到完全准备好，才允许自己开始。”</h3><span class="reply-tag">来自一位转行做产品的过来人</span><p>我大二时也觉得转方向太早，怕之前学的都白费了。后来才发现，技术背景没有消失，它反而让我更会和研发一起判断问题。<br><br>如果重来一次，我会先用一个小项目试两周，而不是先逼自己做一个永久决定。你现在最想验证的，是自己喜不喜欢产品，还是能不能做好它？</p></article>
+    <button class="primary" id="keep-letter">收进瓶子柜</button><p class="muted-note">演示回信，非真实用户内容</p>
+  </div>
+</dialog>
+
+<dialog class="sheet" id="experience">
+  <div class="sheet-inner"><div class="grab"></div><div class="sheet-head"><h2>我的经历</h2><button class="close" data-close aria-label="关闭">×</button></div><p class="sub">走过的路会帮助系统找到你能接住的故事。</p>
+    <div class="experience-list"><div class="experience"><strong>第一次加入实验室，后来选择离开</strong><span>愿意接收相似故事 · 已确认</span></div><div class="experience"><strong>跨专业组队，做完第一个项目</strong><span>暂不接收 · 已确认</span></div></div>
+    <button class="primary" id="add-experience">＋ 添加一段经历</button>
+  </div>
+</dialog>
+
+<dialog class="sheet" id="story-view">
+  <div class="sheet-inner"><div class="grab"></div><div class="sheet-head"><h2>漂到你附近的瓶子</h2><button class="close" data-close aria-label="关闭">×</button></div><article class="letter-card"><span class="stamp">SOMEONE'S CHAPTER</span><h3 id="view-copy"></h3><p>匿名漂流者 · 希望遇见真正走过这段路的人</p></article><button class="primary" id="catch">我演过，接住这一集</button><p class="muted-note">此操作为本地交互演示，不会联系真实用户</p></div>
+</dialog>
+
+<div class="toast hidden" id="toast" role="status"></div>
+<script>
+(() => {
+  const $ = (s, root=document) => root.querySelector(s);
+  const $$ = (s, root=document) => [...root.querySelectorAll(s)];
+  const key = 'chapter-bottle-miniapp-v1';
+  let saved = { visits:0, outgoing:[], replyUnread:true };
+  try { saved = {...saved, ...JSON.parse(localStorage.getItem(key) || '{}')}; } catch (_) {}
+  saved.visits += 1;
+  let page = 0, tab = 'out';
+  const examples = [
+    {story:'大二，开始认真考虑从技术转向 AI 产品。',mark:'✦'},
+    {story:'第一次参加黑客松，不知道该投入到什么程度。',mark:'⌁'}
+  ];
+  const incoming = [{story:'从家乡来到新城市读书，正在学着适应一个人。',mark:'☾'},{story:'准备很久的比赛没有得到结果，想知道努力是否还有意义。',mark:'❧'},{story:'和朋友渐渐走远，不知道要不要再主动一次。',mark:'♥'}];
+  const persist = () => { try { localStorage.setItem(key, JSON.stringify(saved)); } catch (_) {} };
+  persist();
+
+  function openDialog(id){ const d = document.getElementById(id); if(d && !d.open) d.showModal(); }
+  $$('[data-open]').forEach(b => b.addEventListener('click', () => { if(b.dataset.open === 'cabinet') renderCabinet(); openDialog(b.dataset.open); }));
+  $$('[data-close]').forEach(b => b.addEventListener('click', () => b.closest('dialog').close()));
+  $$('dialog').forEach(d => d.addEventListener('click', e => { if(e.target === d) d.close(); }));
+  $('#new-bottle').addEventListener('click', () => openDialog('composer'));
+
+  $$('.chip').forEach(chip => chip.addEventListener('click', () => chip.setAttribute('aria-pressed', chip.getAttribute('aria-pressed') !== 'true')));
+  $('#generate').addEventListener('click', () => {
+    const tags = $$('.chip[aria-pressed="true"]').map(x => x.textContent);
+    if(!tags.length){ toast('先选择 1～3 个贴近你的标签'); return; }
+    const topic = tags.join('、');
+    $('#story').value = `最近我正在经历一段关于「${topic}」的时期。事情真正发生后，我发现自己一边想往前走，一边又担心选错。身边的人都有各自的节奏，我更想听听真正走过类似阶段的人：当时你怎样做出下一步选择，又是怎么面对不确定的？`;
+    if(!$('#wanted').value) $('#wanted').value = `也曾经历过${tags[0]}，后来找到自己节奏的人`;
+    toast('已生成一版草稿，你可以继续改成自己的话');
+  });
+
+  $('#throw').addEventListener('click', () => {
+    const story = $('#story').value.trim(), wanted = $('#wanted').value.trim();
+    if(!story || !wanted){ $('#compose-error').textContent = '请写下经历，并说明想听怎样的过来人。'; return; }
+    $('#compose-error').textContent = '';
+    saved.outgoing.unshift({story,wanted,mark:['✦','❧','♥','☾'][saved.outgoing.length%4]}); persist();
+    $('#throw-count').textContent = `${2 + saved.outgoing.length} 只漂流中`;
+    $('#composer').close();
+    const flying = $('#new-bottle').cloneNode(true); flying.removeAttribute('id'); flying.classList.add('flying'); document.body.append(flying);
+    setTimeout(() => flying.remove(), 1750);
+    setTimeout(() => toast('抛出成功 · 海面已经接住了它'), 700);
+    $('#story').value=''; $('#wanted').value=''; $$('.chip').forEach(x=>x.setAttribute('aria-pressed','false'));
+  });
+
+  $$('.ocean-map > .bottle').forEach(b => b.addEventListener('click', () => { $('#view-copy').textContent = b.dataset.story; openDialog('story-view'); }));
+  $('#catch').addEventListener('click', () => { $('#story-view').close(); toast('已接住，TA 的瓶子会留在“我捡到的”'); });
+
+  function cabinetItems(){ return tab === 'out' ? [...saved.outgoing, ...examples] : incoming; }
+  function renderCabinet(){
+    const items = cabinetItems(), pages = Math.max(1, Math.ceil(items.length/5)); page = Math.min(page,pages-1);
+    const grid = $('#cabinet-grid'); grid.replaceChildren();
+    items.slice(page*5,page*5+5).forEach((item,i) => {
+      const b=document.createElement('button'); b.className='slot'; b.innerHTML=`<i class="mini" data-mark="${item.mark}" style="--r:${(i%2?7:-6)}deg;--label:${i%3===0?'#fff0bd':i%3===1?'#dff1d4':'#f8d4d8'}"></i>`;
+      b.title=item.story; b.addEventListener('click',()=>{ $('#view-copy').textContent=item.story; $('#cabinet').close(); openDialog('story-view'); }); grid.append(b);
+    });
+    if(items.slice(page*5,page*5+5).length < 6){ const add=document.createElement('button'); add.className='slot add'; add.innerHTML='<span><b>＋</b>添加瓶子</span>'; add.addEventListener('click',()=>{ $('#cabinet').close();openDialog('composer');});grid.append(add); }
+    while(grid.children.length<6){const empty=document.createElement('div');empty.className='slot';grid.append(empty)}
+    $('#page').textContent=`第 ${page+1} / ${pages} 页`; $('#prev').disabled=page===0; $('#next').disabled=page>=pages-1;
+  }
+  $$('.cab-tabs button').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;page=0;$$('.cab-tabs button').forEach(x=>x.classList.toggle('active',x===b));renderCabinet()}));
+  $('#prev').addEventListener('click',()=>{page--;renderCabinet()}); $('#next').addEventListener('click',()=>{page++;renderCabinet()});
+
+  function readReply(){ saved.replyUnread=false; persist(); $$('.unread-dot').forEach(x=>x.classList.add('hidden')); }
+  $$('[data-open="reply"]').forEach(b=>b.addEventListener('click',readReply));
+  $('#keep-letter').addEventListener('click',()=>{$('#reply').close();toast('回信已收进瓶子柜')});
+  if(!saved.replyUnread) $$('.unread-dot').forEach(x=>x.classList.add('hidden'));
+  if(saved.visits >= 2 && saved.replyUnread) setTimeout(()=>{ openDialog('reply'); readReply(); },700);
+  $('#add-experience').addEventListener('click',()=>toast('新增经历表单可在下一步产品流程中接入'));
+  function toast(msg){const el=$('#toast');el.textContent=msg;el.classList.remove('hidden');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.add('hidden'),2600)}
+  renderCabinet();
+})();
+</script>
+</body>
+</html>

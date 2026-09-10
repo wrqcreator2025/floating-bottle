@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#edf5f4"><title>漂流瓶 · 开瓶，写信，轻轻抛出</title>
+<style>
+:root{--bg:#f4f3ef;--ink:#282824;--muted:#94938b;--line:#ddddd4;--orange:#f15c35}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,"PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}button,textarea,input{font:inherit;color:inherit}button{cursor:pointer}button,a{touch-action:manipulation;-webkit-tap-highlight-color:transparent}button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid #ef987b;outline-offset:4px}.shell{max-width:1440px;margin:auto;padding:0 62px}nav{height:98px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.brand{font-size:20px;font-weight:750;display:flex;align-items:center;gap:13px;letter-spacing:-.7px}.logo{width:29px;height:29px;position:relative;display:inline-block}.logo:before,.logo:after{content:"";position:absolute;width:12px;height:26px;border:2px solid var(--ink);border-radius:9px;transform:rotate(29deg);top:1px;left:2px}.logo:after{left:15px;border-color:var(--orange)}.nav-right{display:flex;align-items:center;gap:29px;font-size:12px}.nav-right a{color:#75756f}.nav-right button{border:1px solid #c8c8be;background:transparent;border-radius:30px;padding:10px 17px;font-size:12px}.nav-right button:hover{background:white}.nav-right button span{color:var(--orange);margin-left:14px}.hero{position:relative;text-align:center;padding:54px 0 35px;max-width:1120px;margin:auto}.small-label{font-size:10px;letter-spacing:2px;display:flex;justify-content:center;align-items:center;gap:9px;color:#8e8d84}.small-label:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--orange)}h1{font-weight:500;font-size:68px;line-height:1.23;letter-spacing:-3px;margin:23px 0 19px}h1 span{position:relative;white-space:nowrap}h1 span:after{content:"";position:absolute;bottom:-6px;left:0;right:0;border-top:2px solid var(--orange);transform:rotate(-2deg)}.intro{font-size:14px;line-height:1.8;color:#8b8a80;margin:0 0 32px}.entry{position:relative;max-width:660px;margin:auto;text-align:left;z-index:1}.input-card{position:relative;background:#fff;border:1px solid #dfdfd7;border-radius:15px;box-shadow:0 5px 0 #e9e8e1,0 22px 46px #29271905;padding:23px 25px 20px}.input-card:focus-within{border-color:#c4b9a7}.input-card label{font-size:11px;color:#8a8a80;display:flex;justify-content:space-between}.input-card label span{font-family:monospace;font-size:10px;color:#b4b2a7}.input-card textarea{display:block;border:0;outline:none;background:none;width:100%;min-height:105px;resize:vertical;padding:17px 0 12px;line-height:1.8;font-size:16px}.input-card textarea::placeholder{color:#aaa99f}.form-bottom{border-top:1px solid #efefe9;padding-top:15px;display:flex;align-items:center;justify-content:space-between;gap:14px}.privacy{font-size:10px;color:#96968b;display:flex;align-items:center;gap:7px}.privacy svg{width:12px;height:12px}.primary{display:inline-flex;justify-content:center;align-items:center;gap:24px;background:var(--orange);color:white;border:1px solid var(--orange);padding:13px 22px;border-radius:8px;font-size:13px;font-weight:500}.primary:hover{background:#da4822;border-color:#da4822}.primary .arrow{font-size:19px;line-height:1}.examples{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:22px;font-size:10px;color:#a19f93}.examples button{border:1px solid #dbdbd1;background:transparent;padding:7px 12px;font-size:10px;border-radius:30px;color:#77766c}.examples button:hover{background:white;border-color:#b6b4a7}.examples span{margin-right:4px}.margin-note{position:absolute;left:0;top:239px;writing-mode:vertical-rl;font-family:monospace;font-size:9px;letter-spacing:3px;color:#b3b0a4}.margin-note:before{content:"";display:inline-block;height:38px;border-right:1px solid #c9c6b9;margin-bottom:14px}.right-graphic{position:absolute;right:15px;top:221px;width:96px;height:96px;opacity:.65}.right-graphic:before,.right-graphic:after{content:"";position:absolute;top:12px;left:15px;width:35px;height:67px;border:1px solid #bfbbae;border-radius:30px;transform:rotate(28deg)}.right-graphic:after{left:44px;border-color:#d19680;transform:rotate(-28deg)}.how-line{max-width:660px;margin:36px auto 0;display:flex;align-items:center;justify-content:center;gap:18px;color:#a19d91;font-size:10px}.how-line span{white-space:nowrap}.how-line b{color:#8b877a;font-weight:400;font-family:monospace;margin-right:7px}.how-line i{width:27px;border-top:1px solid #d7d4c9}.below{max-width:1000px;margin:17px auto 0;border-top:1px solid var(--line);display:grid;grid-template-columns:1.1fr 1fr;gap:64px;padding:29px 0 30px}.give{display:flex;align-items:center;justify-content:space-between;gap:18px}.give h2{font-size:17px;font-weight:500;margin:0 0 8px}.give p{font-size:11px;color:#939084;margin:0;line-height:1.8}.give button{border:1px solid #d6d2c6;border-radius:50%;background:transparent;width:43px;height:43px;flex-shrink:0;font-size:20px;color:var(--orange)}.give button:hover{background:#fff}.faq{border-left:1px solid var(--line);padding-left:35px}.faq details{padding:10px 0}.faq details+details{border-top:1px solid #e4e1d8}summary{display:flex;align-items:center;justify-content:space-between;gap:15px;font-size:11px;color:#7f7b6f;cursor:pointer;list-style:none}summary::-webkit-details-marker{display:none}summary:after{content:"+";font-size:17px;color:#a39e90}details[open] summary:after{content:"−"}.faq p{font-size:11px;line-height:1.9;color:#8e887c;margin:10px 0 0}.footer{max-width:1000px;margin:auto;border-top:1px solid var(--line);padding:19px 0 25px;display:flex;justify-content:space-between;gap:20px;font-size:9px;color:#aca698}.footer span:last-child{letter-spacing:1px}.outline{background:transparent;border:1px solid #ccc6b9;padding:11px 16px;border-radius:8px;font-size:12px}dialog{width:min(510px,calc(100% - 32px));max-height:90dvh;overflow:auto;border:1px solid var(--line);border-radius:17px;padding:32px;background:#faf9f6;color:var(--ink)}dialog::backdrop{background:#25241f70;backdrop-filter:blur(5px)}.close{position:absolute;right:15px;top:14px;border:0;border-radius:50%;width:32px;height:32px;background:#eae7df;font-size:21px}dialog h2{font-weight:500;font-size:25px;margin:13px 0 20px}dialog p{font-size:12px;color:#878175;line-height:1.9}dialog label{display:block;font-size:12px;margin:18px 0 9px}dialog textarea{width:100%;min-height:100px;padding:13px;border:1px solid #ded9ce;border-radius:8px;background:white;line-height:1.8;font-size:14px;resize:vertical}dialog .primary{width:100%;margin-top:18px}.preview-box{background:#eeeae1;border-radius:8px;padding:16px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:1.8}.check{display:flex!important;gap:9px;align-items:flex-start;line-height:1.8}.check input{accent-color:var(--orange);margin-top:4px}.notice{font-size:10px!important;color:#a09889!important}.validation{min-height:15px;font-size:12px;color:#b34328;margin-top:8px}[hidden]{display:none!important}
+@media(min-width:1500px){.hero{padding-top:74px;padding-bottom:45px}h1{font-size:76px}.intro{margin-bottom:39px}.input-card textarea{min-height:123px}.below{margin-top:25px}}
+@media(max-width:1050px){.shell{padding:0 35px}.right-graphic,.margin-note{display:none}.hero{padding-top:44px}.below{gap:30px}.faq{padding-left:28px}}
+@media(max-width:600px){.shell{padding:0 23px}nav{height:75px}.brand{font-size:17px;gap:9px}.logo{transform:scale(.85);width:27px}.nav-right{gap:0}.nav-right>a{display:none}.nav-right button{padding:8px 11px;font-size:10px}.nav-right button span{margin-left:5px}.hero{text-align:left;padding:34px 0 26px}.small-label{justify-content:flex-start;font-size:9px;letter-spacing:1px}h1{font-size:43px;letter-spacing:-1.8px;margin:20px 0 18px;line-height:1.25}.intro{font-size:12px;max-width:300px;margin-bottom:24px;line-height:1.85}.input-card{padding:18px 17px 17px;border-radius:12px}.input-card label{font-size:10px}.input-card textarea{font-size:14px;min-height:122px;line-height:1.8}.form-bottom{flex-direction:column-reverse;align-items:stretch;gap:13px;padding-top:14px}.primary{width:100%;min-height:47px;font-size:14px}.privacy{justify-content:center;font-size:10px}.examples{justify-content:flex-start;gap:6px;margin-top:19px}.examples span{margin-right:1px;font-size:9px}.examples button{font-size:10px;padding:7px 9px}.how-line{margin-top:25px;gap:10px;justify-content:space-between;font-size:9px}.how-line i{width:15px}.how-line b{margin-right:4px}.below{display:block;padding:24px 0 16px;margin-top:0}.give{padding-bottom:23px}.give h2{font-size:17px}.give p{font-size:11px}.give button{width:40px;height:40px}.faq{padding:15px 0 0;border-left:0;border-top:1px solid var(--line)}summary{font-size:11px}.footer{padding:17px 0 24px;font-size:8px;gap:8px;flex-wrap:wrap}.footer span:last-child{letter-spacing:0}dialog{padding:28px 22px}dialog h2{font-size:23px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Research-informed experiment: predictable, low-pressure, readable. */
+:root{--bg:#f3f5f1;--ink:#2e433c;--muted:#68786e;--line:#dce3d9;--orange:#426d58}body{background:radial-gradient(ellipse at 50% 30%,#fbfcf8 0%,#f3f5f1 65%)}.shell{max-width:1300px;padding:0 56px}nav{height:86px;border-bottom:0}.brand{font-size:19px}.logo:after{border-color:#82a38b}.nav-right a{color:#5c6e61}.nav-right button{color:#52695b;border-color:#ccd8cc;font-size:11px}.hero{padding:40px 0 27px}.small-label{color:#667d6b;letter-spacing:1px;font-size:11px}.small-label:before{background:#86a889}h1{font-size:47px;line-height:1.4;letter-spacing:-1.5px;margin:19px 0 16px;font-weight:500}h1 span{color:#64816c}h1 span:after{display:none}.intro{font-size:13px;color:#647566;margin:0 0 29px}.entry{max-width:680px}.input-card{padding:25px 27px 20px;border:1px solid #d5dfd1;border-radius:21px;box-shadow:0 12px 40px #38563907;background:#fffefb}.input-card:focus-within{border-color:#86a78c;box-shadow:0 0 0 3px #7295780d,0 12px 40px #38563907}.form-heading{display:flex;align-items:center;gap:10px}.question-icon{background:#edf2e8;border-radius:9px;display:grid;place-items:center;flex-shrink:0;width:31px;height:31px;color:#718d69;font-size:18px}.input-card label{color:#425b49;font-size:14px;font-weight:500}.input-card textarea{font-size:15px;min-height:104px;padding-top:19px;color:#304a37}.input-card textarea::placeholder{color:#747c6e}.examples{justify-content:flex-start;margin:2px 0 19px;gap:7px}.examples span{color:#737f6d;font-size:10px}.examples button{font-size:11px;color:#52644e;border-color:#dce4d4;background:#f6f8f0;padding:7px 12px}.examples button:hover{background:#eaf0df;border-color:#bcccae}.form-bottom{border-color:#e5eadd;padding-top:17px}.privacy{font-size:11px;color:#677360}.primary{background:#426d58;border-color:#426d58;min-width:125px;border-radius:10px;font-size:13px}.primary:hover{background:#335642;border-color:#335642}.under-card{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:18px;font-size:10px;color:#67765f}.under-card a{color:#466749;text-decoration:underline;text-underline-offset:3px}.expectations{max-width:680px;margin:8px auto 37px;display:grid;grid-template-columns:repeat(3,1fr);gap:21px;text-align:center}.benefit-icon{font-size:22px;color:#8b9e7e;display:block;height:28px}.expectations h2{font-size:12px;font-weight:500;margin:8px 0}.expectations p{font-size:10px;line-height:1.7;color:#65715d;margin:0}.below{max-width:1000px;padding:24px 0;margin-top:0;gap:45px}.give h2{font-size:16px;color:#50664e}.give p{font-size:11px;color:#6c775f}.give button{border-color:#ced8bf;color:#6b8057}.faq{border-color:#dce3d3}.faq summary{color:#586b4e;font-size:11px}.faq p{font-size:12px;color:#5b6c50}.footer{color:#69765f;font-size:9px;border-color:#dce3d3}.preview-box{background:#eaf0e1;color:#405637}dialog{background:#fafcf6}dialog p{color:#617255}.notice{color:#647653!important}dialog textarea{border-color:#d3ddc7}.close{background:#eaf0e1;color:#48633c}.outline{border-color:#c7d3ba}.validation{color:#9d442c}button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline-color:#5d8265}
+@media(min-width:1500px){.hero{padding-top:55px;padding-bottom:33px}h1{font-size:52px}.input-card textarea{min-height:119px}}
+@media(max-width:800px){.shell{padding:0 29px}.hero{padding-top:33px}h1{font-size:40px}.below{gap:24px}}
+@media(max-width:600px){.shell{padding:0 21px}nav{height:73px}.brand{font-size:17px}.nav-right button{font-size:10px;padding:8px 10px}.hero{text-align:left;padding:22px 0 21px}.small-label{font-size:10px;letter-spacing:0}h1{font-size:31px;letter-spacing:-1px;line-height:1.45;margin:17px 0 13px}h1 span{white-space:normal}.intro{font-size:12px;line-height:1.8;margin:0 0 22px;max-width:300px}.input-card{padding:19px 17px 16px;border-radius:17px}.question-icon{width:26px;height:26px;border-radius:8px;font-size:16px}.form-heading{gap:8px}.input-card label{font-size:12px}.input-card textarea{font-size:14px;min-height:116px;line-height:1.9;padding-top:16px}.examples{margin:0 0 17px;gap:6px}.examples button{font-size:10px;padding:7px 11px}.examples span{font-size:9px}.form-bottom{flex-direction:column-reverse;gap:13px;padding-top:14px}.primary{width:100%;min-height:46px;font-size:14px}.privacy{font-size:10px;text-align:center;display:block}.under-card{font-size:9px;gap:10px;margin-top:15px}.expectations{gap:8px;margin:4px auto 27px}.expectations h2{font-size:11px;margin:6px 0}.expectations p{font-size:9px;line-height:1.7;max-width:100px;margin:auto}.benefit-icon{font-size:20px;height:25px}.below{padding:23px 0 13px}.give h2{font-size:16px}.give p{font-size:10px}.give{padding-bottom:22px}.faq{padding-top:12px}.footer{font-size:8px;padding:15px 0 22px}dialog h2{font-size:23px}}
+
+
+/* Experiment 04: a real-time 3D bottle over a quiet sea. */
+:root{--bg:#edf5f4;--ink:#284b50;--muted:#647f81;--line:#d1e2e1;--orange:#396e71}body{background:radial-gradient(ellipse at 18% 35%,#d9eae5 0%,transparent 42%),linear-gradient(175deg,#f8faf7 0%,#edf5f4 50%,#e0eeec 100%);background-attachment:fixed}.shell{max-width:1420px;padding:0 60px}nav{height:88px}.logo:after{border-color:#8fb7af}.nav-right a{color:#617d7c}.nav-right button{border-color:#c7dcd7;color:#496e6d}.hero{max-width:none;display:grid;grid-template-columns:1.08fr 1fr;gap:40px;text-align:left;align-items:center;padding:26px 0 31px}.write-side{max-width:530px;position:relative;z-index:2}.small-label{justify-content:flex-start;color:#73918e;font-size:10px;letter-spacing:1.4px}.small-label:before{background:#86aaa2}h1{font-size:49px;line-height:1.35;letter-spacing:-1.7px;margin:20px 0 19px}h1 span{color:#668e87}.intro{font-size:13px;color:#66817f;margin-bottom:27px}.entry{max-width:none}.input-card{background:#ffffffd9;border-color:#d1e3dd;box-shadow:0 16px 44px #3b6c6108;backdrop-filter:blur(10px);padding:22px}.input-card:focus-within{border-color:#84aaa0;box-shadow:0 0 0 4px #679c8810}.input-card label{color:#456b68}.question-icon{background:#edf5ee;color:#7a9a8d}.input-card textarea{min-height:100px;color:#355755}.input-card textarea::placeholder{color:#758f88}.examples button{background:#f3f8f3;border-color:#dce8df;color:#5f7b6c}.examples span{color:#758b7b}.form-bottom{border-color:#e1eae3}.privacy{color:#708878;font-size:10px}.primary{background:#396e71;border-color:#396e71}.primary:hover{background:#28595c;border-color:#28595c}.under-card{color:#68857b;font-size:10px;gap:12px}.under-card a{color:#426e64}.bottle-stage{height:580px;position:relative;isolation:isolate;min-width:0}.bottle-stage:before{content:"";position:absolute;left:15%;right:10%;bottom:95px;height:45px;border-radius:50%;background:#688f7d21;filter:blur(17px);transform:rotate(-10deg)}#bottle-canvas{width:100%;height:100%;display:block;touch-action:pan-y;cursor:grab;position:relative;z-index:2}#bottle-canvas.dragging{cursor:grabbing}.sea-ring{position:absolute;bottom:75px;left:4%;right:0;height:170px;border:1px solid #ffffffa6;border-radius:50%;transform:rotate(-12deg);z-index:0}.ring-two{bottom:94px;left:12%;right:8%;height:130px;border-color:#9bbdb638}.sea-caption{position:absolute;left:23px;top:24px;color:#8ea59b;font-size:11px;letter-spacing:2px}.bottle-open{position:absolute;z-index:3;bottom:34px;left:50%;transform:translateX(-50%);border:1px solid #b4cec3;background:#f7fbf5c9;border-radius:30px;padding:12px 20px;color:#4f7770;font-size:12px;white-space:nowrap;backdrop-filter:blur(8px)}.bottle-open span{margin-left:17px}.bottle-open:hover{background:white}.bottle-hint{position:absolute;left:0;right:0;text-align:center;bottom:10px;font-size:9px;letter-spacing:1px;color:#7f9b92}.expectations{max-width:890px;gap:35px;padding-top:26px;border-top:1px solid #d2e3dc;margin:0 auto 30px}.expectations h2{color:#4f746a}.expectations p{color:#6c877e}.benefit-icon{color:#8cad9d}.below{border-color:#d2e3dc;max-width:1080px}.faq{border-color:#d2e3dc}.give h2{color:#456c61}.give p{color:#668277}.footer{max-width:1080px;color:#7c9489;border-color:#d2e3dc}.sea-wave{position:fixed;left:-20%;width:140%;height:400px;bottom:-295px;border:1px solid #ffffff89;border-radius:50%;pointer-events:none;z-index:-1;transform:rotate(-4deg)}#bottle-fallback{position:absolute;inset:0;display:grid;place-items:center;font-size:230px;transform:rotate(-17deg)}.write-side.opened .input-card{border-color:#80aaa0}.write-side.opened .question-icon{background:#dceee2}
+@media(min-width:1500px){.hero{padding:40px 0}.bottle-stage{height:630px}h1{font-size:55px}}
+@media(max-width:1100px){.shell{padding:0 33px}.hero{gap:22px;grid-template-columns:.9fr 1fr}h1{font-size:41px}.bottle-stage{height:540px}.input-card{padding:19px}.form-bottom{gap:9px}.primary{min-width:110px;padding:12px 15px}.privacy{font-size:9px}.sea-caption{font-size:9px;left:0}}
+@media(max-width:700px){.shell{padding:0 22px}nav{height:70px}.hero{display:flex;flex-direction:column;gap:13px;padding:0 0 27px}.bottle-stage{height:310px;width:100%;max-width:400px}.bottle-stage:before{bottom:45px;height:25px;left:25%;right:20%}.sea-caption{top:12px;left:8px;font-size:9px;letter-spacing:1px}.sea-ring{height:85px;bottom:45px;left:10%;right:10%}.ring-two{height:65px;bottom:57px;left:19%;right:19%}.bottle-open{bottom:20px;padding:8px 15px;font-size:10px}.bottle-hint{bottom:0;font-size:8px;letter-spacing:0}.write-side{width:100%;max-width:500px}.small-label{display:none}h1{font-size:30px;margin:5px 0 12px;line-height:1.35;letter-spacing:-1px}h1 br{display:none}h1 span{white-space:normal}.intro{font-size:12px;line-height:1.8;margin-bottom:19px;max-width:none}.input-card{padding:17px}.input-card label{font-size:12px}.input-card textarea{min-height:88px;font-size:14px}.examples{margin-bottom:15px}.form-bottom{flex-direction:row;align-items:center;gap:9px}.form-bottom .primary{width:auto;min-width:110px;font-size:12px;min-height:44px;padding:11px 13px}.privacy{font-size:9px;max-width:140px;text-align:left;line-height:1.7}.under-card{font-size:9px}.expectations{padding-top:22px;gap:10px;margin-bottom:25px}.below{display:block}.bottle-stage #bottle-fallback{font-size:150px}.nav-right>a{display:none}.nav-right button{font-size:10px;padding:8px 10px}.brand{font-size:17px}.footer{font-size:8px}}
+
+
+/* Bottle-first: the letter exists only inside the bottle interaction. */
+body{min-height:100svh}.shell{padding:0 40px;max-width:none}nav{height:82px;border:0;position:relative;z-index:2}.nav-right{font-size:10px;color:#7a9890}.ocean{position:relative;min-height:calc(100svh - 140px);display:flex;align-items:center;justify-content:center}.bottle-stage{width:min(680px,90vw);height:min(680px,calc(100svh - 170px));min-height:370px;transition:transform .8s ease,opacity .8s ease}.bottle-stage:before{bottom:85px;left:27%;right:22%}.sea-ring{left:3%;right:3%;bottom:72px;height:130px}.ring-two{left:15%;right:15%;bottom:89px;height:93px}.sea-caption{left:0;right:0;text-align:center;top:6px;font-size:12px;letter-spacing:2px}.bottle-open{bottom:25px;border:0;background:transparent;font-size:13px;letter-spacing:1px;color:#5c847a;padding:10px 20px}.bottle-open:hover{background:#ffffff66}.bottle-hint{bottom:5px;color:#73948b;font-size:9px}.ocean:before,.ocean:after{content:"";position:absolute;left:-10%;width:120%;height:200px;border-top:1px solid #ffffff75;border-radius:50%;bottom:0;pointer-events:none;transform:rotate(-7deg)}.ocean:after{bottom:38px;transform:rotate(4deg);border-color:#b8d5cb26}.ocean-footer{display:flex;justify-content:space-between;gap:15px;font-size:9px;color:#7c978d;padding:14px 0 20px}.paper-dialog{width:min(470px,calc(100% - 34px));padding:31px 30px 25px;background:#fffdf2;border:1px solid #d7d7bb;border-radius:5px 16px 13px 7px;box-shadow:0 30px 100px #406f6530;max-height:85dvh;transform-origin:50% 100%;overflow:auto}.paper-dialog[open]{animation:unroll .6s cubic-bezier(.2,.75,.25,1) both}.paper-dialog::backdrop{background:#dceee542;backdrop-filter:blur(2px)}@keyframes unroll{from{opacity:0;transform:translateY(110px) scale(.45,.12) rotate(-9deg)}to{opacity:1;transform:translateY(0) scale(1) rotate(0)}}.paper-close{position:absolute;right:13px;top:12px;background:transparent;border:0;padding:7px;font-size:18px;color:#8a957a}.paper-head{font-size:10px;color:#949779;letter-spacing:2px;padding-bottom:18px;border-bottom:1px solid #e6e5ce}.paper-modes{display:flex;gap:6px;padding-top:20px}.paper-modes button{border:1px solid #dddfc6;border-radius:25px;padding:8px 13px;font-size:11px;color:#829078;background:transparent}.paper-modes button[aria-pressed=true]{background:#e5ebd5;border-color:#cbd8b4;color:#4f6c43}.paper-dialog h2{font-size:23px;font-weight:500;line-height:1.5;margin:21px 0 8px;color:#466444}.paper-dialog p{font-size:11px;color:#7d8b6f;line-height:1.8}.paper-dialog textarea{border:0;border-radius:0;background:repeating-linear-gradient(transparent 0,transparent 31px,#e6e6d1 31px,#e6e6d1 32px);line-height:32px;min-height:146px;padding:0 2px;resize:vertical;font-size:14px;color:#466043}.paper-dialog textarea::placeholder{color:#8f987c}.paper-dialog label{font-size:11px;color:#738362;margin:16px 0 10px}.paper-dialog .primary{background:#4e7869;border-color:#4e7869;width:100%;margin-top:18px;min-height:44px;font-size:12px}.paper-dialog .primary:hover{background:#3e6657}.paper-dialog .check{font-size:11px;line-height:1.8}.paper-dialog input{accent-color:#658457}.paper-notice{font-size:9px!important;color:#879477!important;margin-bottom:0}.back{border:0;background:transparent;color:#718465;padding:8px 0;margin-top:9px;font-size:11px}.review-text{white-space:pre-wrap;overflow-wrap:anywhere;padding:13px 0;border-bottom:1px solid #e2e3cb;line-height:1.9;font-size:13px;color:#526a48}.review-label{font-size:10px;color:#879275;margin-top:17px}.status-note{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;width:90%;max-width:340px;color:#52756a;z-index:4}.status-note h2{font-size:22px;font-weight:400}.status-note p{font-size:12px;line-height:1.9;color:#759387}.status-note button{background:#ffffff80;border:1px solid #bdd7c9;border-radius:25px;padding:10px 20px;color:#557e6d}.bottle-stage.leaving{transform:translate(95px,-85px) rotate(14deg) scale(.35);opacity:0;pointer-events:none}.status-note[hidden]{display:none}.paper-dialog [hidden]{display:none!important}.error{font-size:11px;color:#a05c40;line-height:1.7}.small-action{border:0;background:transparent;color:#67897b;text-decoration:underline;text-underline-offset:3px;font-size:9px;cursor:pointer}#about{font-size:11px;line-height:1.8;color:#658072;background:#f5faf5;border:1px solid #cbded0;border-radius:12px;padding:24px;width:min(410px,90vw)}#about h2{font-size:18px;font-weight:500}#about button{padding:8px 14px;border:1px solid #bcd1be;background:transparent;border-radius:7px;color:#658072}
+@media(max-width:700px){.shell{padding:0 23px}nav{height:70px}.nav-right{display:block;font-size:9px}.ocean{min-height:calc(100svh - 128px)}.bottle-stage{height:calc(100svh - 160px);min-height:390px;width:100%;max-width:460px}.sea-caption{font-size:10px;top:12px;letter-spacing:1px}.bottle-open{bottom:27px;font-size:12px}.bottle-hint{bottom:9px;font-size:8px}.sea-ring{bottom:75px;height:105px;left:-10%;right:-10%}.ring-two{height:78px;left:3%;right:3%;bottom:87px}.bottle-stage:before{bottom:90px}.ocean-footer{font-size:8px;padding:12px 0 18px}.paper-dialog{padding:28px 22px 21px;max-height:87dvh}.paper-dialog h2{font-size:22px}.paper-dialog textarea{min-height:130px;font-size:14px}.paper-dialog .primary{font-size:13px}.paper-modes button{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.paper-dialog[open]{animation:none}.bottle-stage{transition:none}}
+
+
+/* Experiment 06 — open, unfold, roll back, release. */
+body{background:radial-gradient(ellipse at 50% 29%,#f9f6e9 0%,transparent 48%),linear-gradient(178deg,#f4f5ee 0%,#e7f0ed 45%,#dbe9e8 100%);background-attachment:fixed}.brand{color:#365957}.logo:after{border-color:#c3a878}.nav-right{color:#84988b}.sea-caption{font-family:Georgia,"Songti SC",serif;color:#849583;font-size:15px;letter-spacing:3px}.bottle-stage{height:min(640px,calc(100svh - 218px));min-height:365px}.ocean{min-height:calc(100svh - 185px)}.ocean:before{border-color:#fff9e9b0}.bottle-stage:before{background:#7b9a8124}.bottle-open{border:1px solid #c7d2ba;background:#f8f8ed80;padding:10px 23px;font-size:12px}.bottle-open:hover{background:#fffdf2}.journey-track{display:flex;justify-content:center;align-items:center;gap:12px;height:31px;font-size:9px;color:#9ba99d;letter-spacing:1px}.journey-track i{width:25px;border-top:1px solid #cdd9cc}.journey-track .current{color:#577965}.journey-track .current:before{content:"";display:inline-block;width:4px;height:4px;border-radius:50%;background:#b99b5e;margin-right:6px;vertical-align:middle}.ocean-footer{padding-top:15px}.paper-dialog{background:linear-gradient(105deg,#fffdf0,#f9f5e6);box-shadow:0 15px 80px #395f512b;border-color:#d9d5b8}.paper-head{color:#a49c7a;font-size:9px}.paper-dialog h2{font-family:Georgia,"Songti SC",serif;font-size:25px;font-weight:400}.paper-dialog textarea{background:repeating-linear-gradient(transparent 0,transparent 31px,#dfdec8 31px,#dfdec8 32px)}.paper-modes button[aria-pressed=true]{background:#e7ead3;border-color:#d1d7b2}.paper-dialog .primary{background:#526e60;border-color:#526e60}.paper-dialog.rolling{animation:rollin .38s ease-in forwards;pointer-events:none}@keyframes rollin{to{opacity:0;transform:translateY(100px) scale(.2,.08) rotate(-10deg)}}.bottle-seal{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%) rotate(-12deg);z-index:3;color:#fff8e8;background:#a98657;border:3px double #ceb886;border-radius:50%;height:52px;width:52px;display:grid;place-items:center;font-size:9px;letter-spacing:1px;pointer-events:none;box-shadow:0 3px 8px #5c77531a}#sealed-actions{position:absolute;z-index:4;bottom:31px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:8px}#toss-button{background:#526f62;color:#fffdf0;border:0;border-radius:28px;padding:12px 25px;font-size:12px;cursor:pointer}#reopen-button{background:transparent;border:0;color:#698779;font-size:10px;padding:5px 15px;cursor:pointer}.bottle-stage.leaving{transform:translate(20px,-140px) rotate(22deg) scale(.13);opacity:0;transition:transform 1.1s cubic-bezier(.3,.05,.65,1),opacity 1.1s}.bottle-stage.settling{transform:translateY(45px) scale(.87);opacity:.14;pointer-events:none}.status-note{padding:26px 20px;background:#f3f7eece;border:1px solid #d4dfcd;border-radius:12px;backdrop-filter:blur(8px)}#bottle-canvas{touch-action:none}.paper-dialog textarea{background:repeating-linear-gradient(transparent 0,transparent 31px,#e2dfc9 31px,#e2dfc9 32px)}
+@media(max-width:700px){.ocean{min-height:calc(100svh - 165px)}.bottle-stage{height:calc(100svh - 192px);min-height:360px}.sea-caption{font-size:12px;letter-spacing:2px;top:5px}.journey-track{font-size:8px;height:27px;gap:10px}.journey-track i{width:18px}.paper-dialog h2{font-size:23px}.bottle-seal{width:44px;height:44px;font-size:8px}.ocean-footer{font-size:8px}.bottle-hint{font-size:8px}#sealed-actions{bottom:33px}.bottle-stage.leaving{transform:translate(10px,-110px) rotate(20deg) scale(.12)}}
+@media(prefers-reduced-motion:reduce){.paper-dialog.rolling{animation:none}.bottle-stage.leaving,.bottle-stage.settling{transition:none}}
+
+</style></head>
+<body><div class="sea-wave" aria-hidden="true"></div><div class="shell"><nav aria-label="主导航"><a class="brand" href="#"><span class="logo" aria-hidden="true"></span>漂流瓶</a><span class="nav-right">把话，留给走过这段路的人。</span></nav><main class="ocean"><div class="bottle-stage" id="bottle-stage"><div class="sea-ring"></div><div class="sea-ring ring-two"></div><span class="sea-caption">有一段话，想留给懂的人。</span><canvas id="bottle-canvas" role="img" aria-label="可拖动旋转的漂流瓶，点击或使用下方按钮打开信纸"></canvas><div id="bottle-fallback" hidden aria-hidden="true">🍾</div><button class="bottle-open" id="bottle-open">打开瓶塞 ↗</button><div class="bottle-seal" id="seal-mark" aria-hidden="true" hidden>信已装好</div><div id="sealed-actions" hidden><button id="toss-button">向海面抛出 ↗</button><button id="reopen-button">打开再看看</button></div><span class="bottle-hint" id="bottle-hint">点一下打开 · 拖动转一转</span></div><div id="finished" class="status-note" hidden role="status"><h2 id="finished-title"></h2><p id="finished-message"></p><button id="again">让瓶子回来</button></div></main><div class="journey-track" aria-label="当前交互阶段"><span class="current" data-phase="open">开瓶</span><i></i><span data-phase="write">写信</span><i></i><span data-phase="seal">装好</span><i></i><span data-phase="send">出发</span></div><footer class="ocean-footer"><button class="small-action" id="about-open">这只瓶子会去哪里？</button><span>交互原型 · 不发送、不保存</span></footer></div>
+<dialog class="paper-dialog" id="paper" aria-labelledby="paper-title"><button class="paper-close" id="paper-close" aria-label="收起信纸">×</button><div class="paper-head">从瓶子里，展开这一页</div><div id="edit-page"><div class="paper-modes" aria-label="选择写什么"><button type="button" data-mode="seek" aria-pressed="true">我正在经历</button><button type="button" data-mode="share" aria-pressed="false">我走过的</button></div><h2 id="paper-title">最近，你正在经历什么？</h2><p id="paper-desc">写几句，找个走过这段路的人聊聊。</p><label for="letter-body" class="sr-label">这一集的故事</label><textarea id="letter-body" maxlength="1500" placeholder="我现在大二，想换个方向，但还没想好……"></textarea><div id="share-options" hidden><label class="check"><input type="checkbox" id="confirmed">这是我真实走过的经历。</label><label class="check"><input type="checkbox" id="available">愿意接收相关邀请，随时可以关闭。</label><label for="reflection">想对当时的自己说（选填）</label><textarea id="reflection" maxlength="1000" placeholder="也可以先留白。" style="min-height:64px"></textarea></div><p class="error" id="body-error" role="status"></p><button class="primary" id="continue">写好了，选想找的人 →</button></div>
+<div id="target-page" hidden><h2>想听谁的经历？</h2><label for="target-body">希望 TA 走过怎样的路？</label><textarea id="target-body" maxlength="1000" placeholder="比如：本科也从技术转向产品，做过产品实习的人。"></textarea><p class="error" id="target-error" role="status"></p><button class="primary" id="target-next">看看瓶子里的信 →</button><button class="back" id="target-back">← 改改刚才写的</button></div>
+<div id="review-page" hidden><h2 id="review-title">把这一集放进瓶子。</h2><div class="review-text" id="review-body"></div><div class="review-label" id="review-label"></div><div class="review-text" id="review-extra"></div><p id="review-info"></p><button class="primary" id="release">卷好信纸，放回瓶中 ↓</button><button class="back" id="review-back">← 再改一下</button></div><p class="paper-notice">仅演示，不会发送或保存。收起后可继续编辑。</p></dialog>
+<dialog id="about" aria-labelledby="about-title"><h2 id="about-title">漂向经历相似、愿意回应的人。</h2><p>这不是随机投递。正式产品会在你确认后，向符合目标经历的过来人发出邀请。AI 帮忙找人，真人写回信；最多追问一次，不需要加好友。</p><p>当前只演示写信和封瓶，不会匹配或发送。写过的经历只有本人确认、主动开放后才可接收邀请。</p><button id="about-close">知道了</button></dialog>
+<script>
+(() => {
+ const paper=document.getElementById('paper');
+ const byId=id=>document.getElementById(id);
+ let mode='seek',step='edit-page',timer,sealed=false,launched=false;
+ function phase(value){document.querySelectorAll('[data-phase]').forEach(x=>x.classList.toggle('current',x.dataset.phase===value));}
+ const drafts={seek:'',share:''};
+ function show(id){step=id;['edit-page','target-page','review-page'].forEach(x=>byId(x).hidden=x!==id);}
+ window.openBottlePaper=()=>{
+   if(paper.open)return;
+   if(launched)return;
+   if(sealed){sealed=false;byId('sealed-actions').hidden=true;byId('seal-mark').hidden=true;byId('bottle-open').hidden=false;document.dispatchEvent(new Event('bottle-unseal'));}
+   phase('write');
+   clearTimeout(timer);
+   timer=setTimeout(()=>{paper.showModal();const focus=step==='edit-page'?'letter-body':step==='target-page'?'target-body':'release';byId(focus).focus();},matchMedia('(prefers-reduced-motion:reduce)').matches?0:240);
+ };
+ function setMode(next){drafts[mode]=byId('letter-body').value;mode=next;byId('letter-body').value=drafts[mode];
+   document.querySelectorAll('[data-mode]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.mode===mode)));
+   byId('paper-title').textContent=mode==='seek'?'最近，你正在经历什么？':'哪一集，你已经走过？';
+   byId('paper-desc').textContent=mode==='seek'?'写几句，找个走过这段路的人聊聊。':'成功或遗憾都算。写下你真实走过的一段。';
+   byId('letter-body').placeholder=mode==='seek'?'我现在大二，想换个方向，但还没想好……':'第一次找实习，我也投了很多份没有回音的简历……';
+   byId('share-options').hidden=mode!=='share';byId('continue').textContent=mode==='seek'?'写好了，选想找的人 →':'看看我的经历 →';byId('body-error').textContent='';
+ }
+ document.querySelectorAll('[data-mode]').forEach(x=>x.addEventListener('click',()=>setMode(x.dataset.mode)));
+ byId('paper-close').addEventListener('click',()=>paper.close());
+ paper.addEventListener('close',()=>{document.dispatchEvent(new Event('bottle-close'));if(!sealed)phase('open');byId('bottle-open').focus({preventScroll:true});});
+ function review(){show('review-page');byId('review-body').textContent=byId('letter-body').value.trim();
+   byId('review-title').textContent=mode==='seek'?'把这一集放进瓶子。':'留好你走过的这一集。';
+   byId('review-label').textContent=mode==='seek'?'想遇见走过这样一段路的人':'想对当时的自己说';
+   byId('review-extra').textContent=mode==='seek'?byId('target-body').value.trim():(byId('reflection').value.trim()||'暂时留白');
+   byId('review-info').textContent=mode==='seek'?'仅预览抛出动画，不会发出真人邀请。':(byId('available').checked?'预览选择：愿意接收邀请。':'预览选择：仅记录，暂不接收邀请。');
+   byId('release').textContent='卷好信纸，放回瓶中 ↓';byId('release').focus();
+ }
+ byId('continue').addEventListener('click',()=>{
+   if(!byId('letter-body').value.trim()){byId('body-error').textContent='从一句话开始就好。';byId('letter-body').focus();return;}
+   if(mode==='share'&&!byId('confirmed').checked){byId('body-error').textContent='请确认这是你真实走过的经历。';byId('confirmed').focus();return;}
+   byId('body-error').textContent='';if(mode==='share')review();else{show('target-page');byId('target-body').focus();}
+ });
+ byId('target-next').addEventListener('click',()=>{if(!byId('target-body').value.trim()){byId('target-error').textContent='说说你希望对方经历过什么。';byId('target-body').focus();return;}byId('target-error').textContent='';review();});
+ byId('target-back').addEventListener('click',()=>{show('edit-page');byId('letter-body').focus();});
+ byId('review-back').addEventListener('click',()=>{show(mode==='seek'?'target-page':'edit-page');byId(mode==='seek'?'target-body':'letter-body').focus();});
+ function launch(){
+   if(!sealed||launched)return;
+   launched=true;phase('send');byId('sealed-actions').hidden=true;
+   byId('bottle-stage').classList.add(mode==='seek'?'leaving':'settling');
+   byId('finished-title').textContent=mode==='seek'?'让这一集，漂向走过的人。':'这一段，留给后来的人。';
+   byId('finished-message').textContent='演示完成。没有发送邀请，也没有保存内容。';
+   setTimeout(()=>{byId('finished').hidden=false;byId('again').focus();},matchMedia('(prefers-reduced-motion:reduce)').matches?0:900);
+ }
+ byId('release').addEventListener('click',()=>{
+   sealed=true;paper.classList.add('rolling');
+   setTimeout(()=>{
+     paper.close();paper.classList.remove('rolling');
+     phase('seal');byId('bottle-open').hidden=true;byId('seal-mark').hidden=false;byId('sealed-actions').hidden=false;
+     byId('toss-button').textContent=mode==='seek'?'向海面抛出 ↗':'把这段经历留下 ↓';
+     byId('bottle-hint').textContent=mode==='seek'?'向上轻推瓶子，或点击抛出 · 仅演示':'随时可以打开修改 · 仅演示';
+     document.dispatchEvent(new CustomEvent('bottle-seal',{detail:{canToss:mode==='seek'}}));
+     byId('toss-button').focus({preventScroll:true});
+   },matchMedia('(prefers-reduced-motion:reduce)').matches?0:380);
+ });
+ byId('toss-button').addEventListener('click',launch);
+ document.addEventListener('bottle-toss',launch);
+ byId('reopen-button').addEventListener('click',()=>{document.dispatchEvent(new Event('bottle-reopen'));window.openBottlePaper();});
+ byId('again').addEventListener('click',()=>{
+   sealed=false;launched=false;byId('finished').hidden=true;byId('bottle-stage').classList.remove('leaving','settling');
+   byId('sealed-actions').hidden=true;byId('seal-mark').hidden=true;byId('bottle-open').hidden=false;
+   byId('bottle-hint').textContent='点一下打开 · 拖动转一转';
+   document.dispatchEvent(new Event('bottle-unseal'));phase('open');show('edit-page');byId('bottle-open').focus();
+ });
+ byId('about-open').addEventListener('click',()=>byId('about').showModal());byId('about-close').addEventListener('click',()=>byId('about').close());
+})();
+</script><script>
+(() => {
+  const canvas = document.getElementById('bottle-canvas');
+  const opener = document.getElementById('bottle-open');
+  const hint = document.getElementById('bottle-hint');
+  let opened = false,canToss=false;
+  function openBottle() {
+    if (document.getElementById('bottle-stage').classList.contains('leaving') || document.getElementById('bottle-stage').classList.contains('settling')) return;
+    opened = true;
+    window.openBottlePaper();
+  }
+  document.addEventListener('bottle-close', () => { opened = false; });
+  document.addEventListener('bottle-seal',e=>{opened=false;canToss=e.detail.canToss;});
+  document.addEventListener('bottle-unseal',()=>{canToss=false;});
+  document.addEventListener('bottle-reopen',()=>{opened=true;canToss=false;});
+  opener.addEventListener('click', openBottle);
+  const gl = canvas.getContext('webgl', {alpha:true,antialias:true,premultipliedAlpha:false});
+  canvas.style.touchAction='none';
+  if (!gl) {
+    canvas.hidden = true;
+    document.getElementById('bottle-fallback').hidden = false;
+    hint.textContent = '点击按钮打开瓶子';
+    return;
+  }
+  function shader(type, source) {
+    const result=gl.createShader(type); gl.shaderSource(result,source); gl.compileShader(result);
+    if(!gl.getShaderParameter(result,gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(result));
+    return result;
+  }
+  const vs = shader(gl.VERTEX_SHADER, `
+    attribute vec3 aPos; attribute vec3 aNormal;
+    uniform vec2 uAngles; uniform float uAspect; uniform float uLift;
+    varying vec3 vN; varying vec3 vP; varying vec3 vLocal;
+    void main(){
+      vec3 p=aPos; p.y+=uLift; vec3 n=aNormal;
+      float c=cos(uAngles.x),s=sin(uAngles.x);
+      mat3 ry=mat3(c,0.,-s, 0.,1.,0., s,0.,c);
+      c=cos(uAngles.y);s=sin(uAngles.y);
+      mat3 rx=mat3(1.,0.,0., 0.,c,s, 0.,-s,c);
+      c=cos(-.24);s=sin(-.24);
+      mat3 rz=mat3(c,s,0., -s,c,0., 0.,0.,1.);
+      p=rz*rx*ry*p;n=rz*rx*ry*n;
+      vN=n;vP=p;vLocal=aPos;
+      float z=5.3-p.z;
+      gl_Position=vec4(p.x*2.8/uAspect,(p.y-.02)*2.8,z-0.2,z);
+    }
+  `);
+  const fs = shader(gl.FRAGMENT_SHADER, `
+    precision mediump float;
+    varying vec3 vN;varying vec3 vP;varying vec3 vLocal;
+    uniform vec3 uColor;uniform float uGlass;uniform float uPaper;
+    void main(){
+      vec3 n=normalize(vN);vec3 eye=normalize(vec3(0.,0.,5.3)-vP);
+      float diff=max(dot(n,normalize(vec3(-2.,3.,4.))),0.);
+      float rim=pow(1.-abs(dot(n,eye)),2.2);
+      float spec=pow(max(dot(reflect(-normalize(vec3(-2.,3.,4.)),n),eye),0.),45.);
+      vec3 col=uColor*(.73+.27*diff)+vec3(.45)*spec;
+      float alpha=1.;
+      if(uGlass>.5){
+        col=mix(vec3(.70,.87,.80),vec3(.30,.61,.54),rim*.7);
+        col+=vec3(.5)*spec;
+        float line=pow(max(0.,dot(n,normalize(vec3(-.7,.2,1.)))),30.);
+        col+=line*.27;
+        alpha=.12+rim*.54+spec*.35+line*.22;
+      }
+      if(uPaper>.5){
+        float yy=vLocal.y;
+        float stripes=step(.42,fract((yy+.8)*9.));
+        float bounds=step(-.42,yy)*step(yy,.36)*step(abs(vLocal.x),.23);
+        col=mix(col,vec3(.53,.63,.51),stripes*bounds*.28);
+      }
+      gl_FragColor=vec4(col,alpha);
+    }
+  `);
+  const program=gl.createProgram();gl.attachShader(program,vs);gl.attachShader(program,fs);gl.linkProgram(program);
+  if(!gl.getProgramParameter(program,gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program));
+  gl.useProgram(program);
+  const position=gl.getAttribLocation(program,'aPos'),normal=gl.getAttribLocation(program,'aNormal');
+  const uniforms={};for(const key of ['uAngles','uAspect','uLift','uColor','uGlass','uPaper']) uniforms[key]=gl.getUniformLocation(program,key);
+  function lathe(profile,segments=80){
+    const data=[];
+    function point(row,angle){
+      const [r,y]=profile[row];const prev=profile[Math.max(0,row-1)],next=profile[Math.min(profile.length-1,row+1)];
+      const dr=next[0]-prev[0],dy=next[1]-prev[1],l=Math.hypot(dr,dy)||1;
+      return [r*Math.cos(angle),y,r*Math.sin(angle),dy/l*Math.cos(angle),-dr/l,dy/l*Math.sin(angle)];
+    }
+    for(let i=0;i<profile.length-1;i++)for(let j=0;j<segments;j++){
+      const a=j/segments*Math.PI*2,b=(j+1)/segments*Math.PI*2;
+      const p=point(i,a),q=point(i,b),r=point(i+1,a),t=point(i+1,b);
+      data.push(...p,...r,...q,...q,...r,...t);
+    }
+    const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data),gl.STATIC_DRAW);
+    return {buffer,count:data.length/6};
+  }
+  const bottle=lathe([[0,-1.18],[.35,-1.18],[.48,-1.14],[.54,-1.05],[.56,-.92],[.56,.40],[.54,.61],[.48,.76],[.36,.91],[.23,1.02],[.20,1.13],[.20,1.48],[.23,1.49],[.24,1.54],[.23,1.59],[.16,1.59],[.16,1.49],[.16,1.13]]);
+  const bottom=lathe([[0,-1.14],[.4,-1.14],[.50,-1.10],[.51,-1.04]]);
+  const cork=lathe([[0,1.46],[.16,1.46],[.185,1.70],[.17,1.75],[0,1.75]]);
+  const paper=lathe([[.22,-.67],[.25,-.64],[.25,.51],[.22,.54],[.205,.52],[.205,-.64]]);
+  const tie=lathe([[.253,-.18],[.26,-.17],[.26,-.11],[.253,-.10]]);
+  let yaw=.35,pitch=-.12,lift=0,down=null,frame=0,last=0;
+  const reduced=matchMedia('(prefers-reduced-motion:reduce)');
+  gl.enable(gl.DEPTH_TEST);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
+  function drawMesh(mesh,color,glass=0,isPaper=0,offset=0){
+    gl.bindBuffer(gl.ARRAY_BUFFER,mesh.buffer);gl.enableVertexAttribArray(position);gl.enableVertexAttribArray(normal);
+    gl.vertexAttribPointer(position,3,gl.FLOAT,false,24,0);gl.vertexAttribPointer(normal,3,gl.FLOAT,false,24,12);
+    gl.uniform3fv(uniforms.uColor,color);gl.uniform1f(uniforms.uGlass,glass);gl.uniform1f(uniforms.uPaper,isPaper);gl.uniform1f(uniforms.uLift,offset);
+    gl.drawArrays(gl.TRIANGLES,0,mesh.count);
+  }
+  function render(time){
+    const dt=Math.min((time-last)/1000,.04);last=time;
+    const rect=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);
+    const w=Math.max(1,Math.round(rect.width*dpr)),h=Math.max(1,Math.round(rect.height*dpr));
+    if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}
+    gl.viewport(0,0,w,h);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+    const target=opened?.48:0;lift=reduced.matches?target:lift+(target-lift)*Math.min(dt*7,1);
+    const sway=reduced.matches||down?0:Math.sin(time*.0005)*.025;
+    gl.uniform2f(uniforms.uAngles,yaw+sway,pitch);gl.uniform1f(uniforms.uAspect,w/h);
+    gl.depthMask(true);gl.disable(gl.CULL_FACE);
+    drawMesh(paper,[.90,.86,.70],0,1);drawMesh(tie,[.51,.63,.51]);drawMesh(cork,[.69,.52,.32],0,0,lift);
+    gl.depthMask(false);gl.enable(gl.CULL_FACE);gl.cullFace(gl.FRONT);drawMesh(bottle,[.6,.8,.7],1);
+    gl.cullFace(gl.BACK);drawMesh(bottle,[.6,.8,.7],1);drawMesh(bottom,[.6,.8,.7],1);gl.disable(gl.CULL_FACE);gl.depthMask(true);
+    frame=requestAnimationFrame(render);
+  }
+  canvas.addEventListener('pointerdown',e=>{down={id:e.pointerId,x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY,distance:0};canvas.setPointerCapture(e.pointerId);canvas.classList.add('dragging');});
+  canvas.addEventListener('pointermove',e=>{if(!down||down.id!==e.pointerId)return;const dx=e.clientX-down.x,dy=e.clientY-down.y;down.distance+=Math.abs(dx)+Math.abs(dy);yaw+=dx*.009;pitch=Math.max(-.5,Math.min(.5,pitch+dy*.004));down.x=e.clientX;down.y=e.clientY;});
+  canvas.addEventListener('pointerup',e=>{if(!down||down.id!==e.pointerId)return;const tap=down.distance<8;const tossed=canToss&&down.startY-e.clientY>65;down=null;if(tossed){document.dispatchEvent(new Event('bottle-toss'));return;}canvas.classList.remove('dragging');if(tap)openBottle();});
+  canvas.addEventListener('pointercancel',()=>{down=null;canvas.classList.remove('dragging');});
+  document.addEventListener('visibilitychange',()=>{cancelAnimationFrame(frame);if(!document.hidden){last=performance.now();frame=requestAnimationFrame(render);}});
+  canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();cancelAnimationFrame(frame);canvas.hidden=true;document.getElementById('bottle-fallback').hidden=false;hint.textContent='点击按钮打开瓶子';});
+  frame=requestAnimationFrame(render);
+})();
+
+</script></body></html>

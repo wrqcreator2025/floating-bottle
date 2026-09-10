@@ -1,0 +1,785 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#98b8bd">
+  <title>漂流瓶 · 海上来信</title>
+  <style>
+    :root {
+      --ink: #18393d;
+      --paper: #f3ead7;
+      --paper-deep: #e6d7bb;
+      --coral: #c85d48;
+      --sea-top: #9fc3c5;
+      --sea-mid: #5f939b;
+      --sea-deep: #245f6d;
+      --approach: 0;
+      --drag-shift: 0px;
+      --drag-reverse: 0px;
+      --shadow-scale: .6;
+      --serif: "Songti SC", "STSong", "Noto Serif CJK SC", Georgia, serif;
+      --sans: Inter, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--sans);
+      background: #8eb0b5;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, textarea { font: inherit; }
+    button { color: inherit; }
+    button, [role="button"] { -webkit-tap-highlight-color: transparent; }
+    button:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+      outline: 2px solid #fff8e8;
+      outline-offset: 5px;
+    }
+
+    .sea-world {
+      position: fixed;
+      inset: 0;
+      isolation: isolate;
+      overflow: hidden;
+      user-select: none;
+      touch-action: none;
+      cursor: grab;
+      background:
+        radial-gradient(ellipse at 52% 34%, rgba(255,255,235,.62) 0 5%, transparent 31%),
+        linear-gradient(#a9c7c7 0 34%, #84afb4 34.2%, #2b6875 100%);
+    }
+    .sea-world.is-dragging { cursor: grabbing; }
+
+    .sky {
+      position: absolute;
+      inset: 0 0 62% 0;
+      background:
+        linear-gradient(106deg, transparent 14%, rgba(255,248,214,.22) 36%, transparent 58%),
+        linear-gradient(#a7c4c5, #91b6b9 74%, #7fa8ad);
+    }
+    .sky::after {
+      content: "";
+      position: absolute;
+      left: 50%; bottom: -2px;
+      width: min(52vw, 680px); height: 30px;
+      transform: translateX(-48%);
+      background: radial-gradient(ellipse, rgba(255,245,207,.42), transparent 68%);
+      filter: blur(7px);
+    }
+    .horizon {
+      position: absolute;
+      z-index: 2;
+      top: 37.5%; left: 0; right: 0;
+      height: 2px;
+      opacity: .46;
+      background: linear-gradient(90deg, transparent, #d8e0d9 20%, #e9e6d4 52%, #c7d8d4 79%, transparent);
+    }
+    .ocean {
+      position: absolute;
+      z-index: 1;
+      inset: 38% 0 0;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(246,238,202,.25), transparent 42%),
+        linear-gradient(180deg, var(--sea-top), var(--sea-mid) 44%, var(--sea-deep));
+    }
+    .wave-field, .wave-field::before, .wave-field::after {
+      position: absolute;
+      content: "";
+      inset: -12% -20%;
+      pointer-events: none;
+    }
+    .wave-field {
+      opacity: .68;
+      transform: translate3d(var(--drag-shift), 0, 0);
+      background:
+        repeating-radial-gradient(ellipse at 48% 0%, transparent 0 34px, rgba(225,239,232,.18) 35px 36px, transparent 38px 68px);
+      animation: breathe 8s ease-in-out infinite alternate;
+    }
+    .wave-field::before {
+      opacity: .55;
+      background: repeating-linear-gradient(174deg, transparent 0 36px, rgba(240,244,225,.17) 37px 38px, transparent 40px 75px);
+      transform: translateX(var(--drag-reverse));
+      animation: drift 18s linear infinite;
+    }
+    .wave-field::after {
+      inset: 38% -10% -20%;
+      opacity: .36;
+      background: repeating-radial-gradient(ellipse at 50% -12%, transparent 0 58px, rgba(213,237,232,.18) 60px 62px, transparent 64px 111px);
+      transform: scaleX(1.6);
+    }
+    .grain {
+      position: absolute;
+      z-index: 20;
+      inset: 0;
+      pointer-events: none;
+      opacity: .12;
+      mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+    }
+
+    .brand {
+      position: absolute;
+      z-index: 12;
+      top: max(25px, env(safe-area-inset-top));
+      left: max(28px, env(safe-area-inset-left));
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: rgba(18,54,58,.84);
+      font-family: var(--serif);
+      font-size: 14px;
+      letter-spacing: .18em;
+      pointer-events: none;
+    }
+    .brand-mark {
+      width: 10px; height: 15px;
+      border: 1px solid currentColor;
+      border-radius: 6px 6px 4px 4px;
+      transform: rotate(-12deg);
+    }
+
+    .instruction {
+      position: absolute;
+      z-index: 12;
+      left: 50%; bottom: max(38px, calc(env(safe-area-inset-bottom) + 25px));
+      transform: translateX(-50%);
+      width: min(90vw, 460px);
+      text-align: center;
+      color: rgba(237,246,238,.88);
+      text-shadow: 0 1px 18px rgba(5,43,50,.4);
+      pointer-events: none;
+      transition: opacity .45s ease, transform .45s ease;
+    }
+    .instruction strong {
+      display: block;
+      font-family: var(--serif);
+      font-size: clamp(17px, 2.2vw, 23px);
+      font-weight: 400;
+      letter-spacing: .12em;
+    }
+    .instruction small {
+      display: block;
+      margin-top: 7px;
+      opacity: .68;
+      font-size: 11px;
+      letter-spacing: .12em;
+    }
+    .pull-glyph {
+      display: block;
+      width: 1px; height: 27px;
+      margin: 13px auto 0;
+      background: linear-gradient(transparent, rgba(255,255,255,.82));
+      animation: pull 1.8s ease-in-out infinite;
+    }
+    .pull-glyph::after {
+      content: "";
+      display: block;
+      width: 6px; height: 6px;
+      margin: 20px 0 0 -3px;
+      border-right: 1px solid white;
+      border-bottom: 1px solid white;
+      transform: rotate(45deg);
+    }
+    .ready .instruction { opacity: 0; transform: translate(-50%, 10px); }
+
+    .bottle-wrap {
+      position: absolute;
+      z-index: 8;
+      left: 0; top: 0;
+      width: 152px; height: 270px;
+      transform-origin: 50% 76%;
+      will-change: transform, filter;
+      filter: drop-shadow(0 18px 16px rgba(8,43,49,.26));
+      pointer-events: none;
+    }
+    .bottle-wrap::after {
+      content: "";
+      position: absolute;
+      left: 21%; right: 18%; bottom: 7px;
+      height: 14px;
+      border-radius: 50%;
+      background: rgba(8,47,55,.24);
+      filter: blur(6px);
+      transform: scaleX(var(--shadow-scale));
+    }
+    .bottle-svg { width: 100%; height: 100%; overflow: visible; }
+    .bottle-glass { filter: url(#glassShadow); }
+    .bottle-wrap.ready-bottle {
+      pointer-events: auto;
+      animation: bottleFloat 3.6s ease-in-out infinite;
+    }
+    .cork-handle {
+      position: absolute;
+      z-index: 4;
+      left: 49px; top: 2px;
+      width: 55px; height: 72px;
+      border: 0;
+      padding: 0;
+      border-radius: 50%;
+      background: transparent;
+      cursor: grab;
+      pointer-events: none;
+    }
+    .ready-bottle .cork-handle { pointer-events: auto; }
+    .cork-handle::before {
+      content: "";
+      position: absolute;
+      inset: 9px;
+      border: 1px solid rgba(255,245,215,.72);
+      border-radius: 50%;
+      opacity: 0;
+      animation: corkPulse 1.8s ease-out infinite;
+    }
+    .ready-bottle .cork-handle::before { opacity: 1; }
+    .cork-label {
+      position: absolute;
+      left: 50%; top: -39px;
+      width: 150px;
+      transform: translateX(-50%);
+      color: rgba(255,248,225,.93);
+      font-family: var(--serif);
+      font-size: 13px;
+      letter-spacing: .12em;
+      text-align: center;
+      opacity: 0;
+      transition: opacity .45s .18s;
+      text-shadow: 0 2px 12px rgba(0,39,46,.55);
+      pointer-events: none;
+    }
+    .ready-bottle .cork-label { opacity: 1; }
+    .cork-piece { transform-origin: 76px 37px; }
+    .opening .cork-piece { animation: corkOpen .8s cubic-bezier(.18,.78,.2,1) forwards; }
+    .opening .letter-roll { animation: rollGlow 1s ease forwards; }
+    .opening { animation: bottleOpen 1.2s cubic-bezier(.2,.7,.2,1) forwards !important; }
+
+    .spark {
+      position: absolute;
+      z-index: 6;
+      left: 50%; top: 28px;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #fff0bc;
+      box-shadow: 0 0 14px #fff2bf;
+      opacity: 0;
+    }
+    .opening .spark { animation: sparkOut 1.05s var(--delay) ease-out forwards; }
+
+    .dim {
+      position: fixed;
+      z-index: 22;
+      inset: 0;
+      background: rgba(7,28,33,.74);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .8s ease, visibility 0s .8s;
+      backdrop-filter: blur(2px) saturate(.7);
+    }
+    .reading-open .dim { opacity: 1; visibility: visible; transition-delay: 0s; }
+    .reading {
+      position: fixed;
+      z-index: 30;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: max(22px, env(safe-area-inset-top)) 22px max(22px, env(safe-area-inset-bottom));
+      overflow: auto;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .reading-open .reading { visibility: visible; pointer-events: auto; }
+    .paper {
+      position: relative;
+      width: min(760px, 100%);
+      max-height: calc(100dvh - 44px);
+      overflow: auto;
+      padding: clamp(32px, 5.5vw, 66px) clamp(25px, 7vw, 78px) 36px;
+      color: #263f3b;
+      background:
+        linear-gradient(90deg, rgba(134,101,55,.055) 1px, transparent 1px) 0 0 / 39px 100%,
+        radial-gradient(circle at 73% 19%, rgba(255,255,255,.6), transparent 25%),
+        var(--paper);
+      border-radius: 3px 3px 7px 7px;
+      box-shadow: 0 28px 90px rgba(0,19,24,.5), inset 0 0 80px rgba(142,99,41,.07);
+      clip-path: inset(49% 0 49% 0 round 4px);
+      transform: perspective(900px) rotateX(-8deg) scale(.62);
+      opacity: 0;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(54,76,68,.3) transparent;
+    }
+    .reading-open .paper { animation: unfold 1.05s cubic-bezier(.22,.76,.22,1) .1s forwards; }
+    .paper::before, .paper::after {
+      content: "";
+      position: absolute;
+      left: 0; right: 0;
+      height: 1px;
+      background: rgba(126,91,51,.13);
+      box-shadow: 0 1px rgba(255,255,255,.38);
+    }
+    .paper::before { top: 33%; }
+    .paper::after { top: 66%; }
+    .letter-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      color: #7f7769;
+      font-size: 10px;
+      letter-spacing: .14em;
+    }
+    .sample-badge {
+      padding: 5px 8px;
+      border: 1px solid rgba(93,91,74,.25);
+      border-radius: 999px;
+      letter-spacing: .08em;
+      white-space: nowrap;
+    }
+    .paper h1 {
+      max-width: 560px;
+      margin: 28px 0 22px;
+      font-family: var(--serif);
+      font-size: clamp(25px, 4.4vw, 39px);
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: .03em;
+    }
+    .letter-body {
+      font-family: var(--serif);
+      font-size: clamp(15px, 2.1vw, 18px);
+      line-height: 2.05;
+      color: #40524c;
+    }
+    .wanted {
+      margin: 28px 0 30px;
+      padding: 15px 17px;
+      border-left: 2px solid #a86654;
+      background: rgba(255,255,255,.28);
+      color: #625f53;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    .reply-area { border-top: 1px solid rgba(70,82,71,.19); padding-top: 25px; }
+    .reply-area label {
+      display: block;
+      margin-bottom: 11px;
+      font-family: var(--serif);
+      font-size: 17px;
+    }
+    .reply-hints { margin-bottom: 12px; color: #8b806f; font-size: 11px; }
+    textarea {
+      display: block;
+      width: 100%; min-height: 112px;
+      resize: vertical;
+      padding: 14px 0;
+      color: #233f3b;
+      background: transparent;
+      border: 0;
+      border-top: 1px solid rgba(65,79,67,.2);
+      border-bottom: 1px solid rgba(65,79,67,.2);
+      border-radius: 0;
+      outline: 0;
+      line-height: 1.85;
+    }
+    textarea::placeholder { color: #9d9586; }
+    .paper-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      margin-top: 22px;
+    }
+    .privacy-note { max-width: 380px; margin: 0; color: #8a8274; font-size: 10px; line-height: 1.7; }
+    .send-button, .again-button {
+      flex: 0 0 auto;
+      border: 0;
+      border-radius: 999px;
+      padding: 13px 21px;
+      color: #f7f1df;
+      background: #294f50;
+      cursor: pointer;
+      box-shadow: 0 7px 18px rgba(36,68,67,.17);
+      transition: transform .2s ease, background .2s ease;
+    }
+    .send-button:hover, .again-button:hover { transform: translateY(-2px); background: #1e4144; }
+    .send-button:disabled { opacity: .42; cursor: not-allowed; transform: none; }
+
+    .returning .paper { animation: foldAway .75s cubic-bezier(.6,0,.8,.4) forwards; }
+    .returning .dim { opacity: 0; transition-delay: .45s; }
+    .returning .bottle-wrap {
+      z-index: 27;
+      pointer-events: none;
+      animation: bottleReturn 1.5s cubic-bezier(.35,.05,.32,1) forwards !important;
+    }
+    .ripple {
+      position: absolute;
+      z-index: 7;
+      left: 50%; top: 65%;
+      width: 40px; height: 15px;
+      border: 2px solid rgba(227,242,231,.78);
+      border-radius: 50%;
+      opacity: 0;
+      transform: translate(-50%,-50%) scale(.15);
+      pointer-events: none;
+    }
+    .ripple.run { animation: oneRipple 1.8s ease-out forwards; }
+    .ripple::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border: 1px solid rgba(224,242,234,.44);
+      border-radius: inherit;
+    }
+    .afterword {
+      position: fixed;
+      z-index: 35;
+      left: 50%; bottom: max(36px, calc(env(safe-area-inset-bottom) + 24px));
+      transform: translate(-50%, 14px);
+      width: min(88vw, 460px);
+      color: #ecf3e8;
+      text-align: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .6s ease, transform .6s ease, visibility 0s .6s;
+    }
+    .done .afterword { opacity: 1; visibility: visible; transform: translate(-50%,0); transition-delay: 0s; }
+    .afterword p { margin: 0 0 17px; font-family: var(--serif); font-size: 17px; letter-spacing: .06em; }
+    .again-button { border: 1px solid rgba(255,255,255,.34); padding: 10px 18px; background: rgba(10,53,60,.48); font-size: 12px; }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    @keyframes breathe { to { transform: translate3d(calc(var(--drag-shift) + 18px), 7px, 0); } }
+    @keyframes drift { to { transform: translateX(calc(var(--drag-reverse) - 140px)); } }
+    @keyframes pull { 0%,100% { transform: translateY(-3px); opacity: .35; } 50% { transform: translateY(5px); opacity: 1; } }
+    @keyframes bottleFloat { 0%,100% { margin-top: 0; } 50% { margin-top: -7px; } }
+    @keyframes corkPulse { from { transform: scale(.6); opacity: .8; } to { transform: scale(1.45); opacity: 0; } }
+    @keyframes corkOpen { 0% { transform: translate(0,0) rotate(0); } 62% { transform: translate(-6px,-71px) rotate(-24deg); } 100% { transform: translate(25px,-108px) rotate(35deg); opacity: 0; } }
+    @keyframes bottleOpen { 0% { margin-top: 0; } 42% { margin-top: 11px; transform-origin: 50% 80%; } 100% { margin-top: 18px; } }
+    @keyframes rollGlow { to { filter: brightness(1.28) drop-shadow(0 0 12px #fce6aa); } }
+    @keyframes sparkOut { 0% { opacity: 0; transform: translate(0,20px) scale(.2); } 25% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--sx),var(--sy)) scale(1.4); } }
+    @keyframes unfold { 0% { clip-path: inset(49% 0 49% 0 round 4px); transform: perspective(900px) rotateX(-8deg) scale(.62); opacity: .2; } 58% { opacity: 1; } 100% { clip-path: inset(0 0 0 0 round 4px); transform: perspective(900px) rotateX(0) scale(1); opacity: 1; } }
+    @keyframes foldAway { from { clip-path: inset(0); opacity: 1; transform: scale(1); } to { clip-path: inset(47% 9% 47% 9%); opacity: 0; transform: scale(.48) translateY(30%); } }
+    @keyframes bottleReturn {
+      0% { transform: translate(calc(50vw - 76px), calc(42vh - 135px)) rotate(-7deg) scale(.58); opacity: 0; }
+      18% { opacity: 1; }
+      66% { transform: translate(calc(50vw - 76px), calc(53vh - 135px)) rotate(7deg) scale(.66); }
+      82% { transform: translate(calc(50vw - 76px), calc(57vh - 135px)) rotate(-2deg) scale(.65); }
+      100% { transform: translate(calc(50vw - 76px), calc(56vh - 135px)) rotate(3deg) scale(.65); opacity: 1; }
+    }
+    @keyframes oneRipple { 0% { opacity: 0; transform: translate(-50%,-50%) scale(.15); } 16% { opacity: .9; } 100% { opacity: 0; transform: translate(-50%,-50%) scale(9); } }
+
+    @media (max-width: 620px) {
+      .brand { top: max(19px, env(safe-area-inset-top)); left: 20px; font-size: 12px; }
+      .bottle-wrap { width: 125px; height: 222px; }
+      .cork-handle { left: 39px; top: -4px; width: 49px; height: 65px; }
+      .instruction { bottom: max(29px, calc(env(safe-area-inset-bottom) + 18px)); }
+      .instruction small { font-size: 10px; }
+      .reading { display: block; padding: 0; background: var(--paper); }
+      .paper {
+        width: 100%; min-height: 100dvh; max-height: none;
+        padding: max(34px, calc(env(safe-area-inset-top) + 23px)) 24px max(30px, calc(env(safe-area-inset-bottom) + 20px));
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .letter-meta { align-items: flex-start; }
+      .paper h1 { margin-top: 24px; }
+      .paper-actions { align-items: stretch; flex-direction: column; }
+      .send-button { width: 100%; }
+      @keyframes bottleReturn {
+        0% { transform: translate(calc(50vw - 62px), calc(43vh - 111px)) rotate(-7deg) scale(.65); opacity: 0; }
+        18% { opacity: 1; }
+        70% { transform: translate(calc(50vw - 62px), calc(57vh - 111px)) rotate(6deg) scale(.73); }
+        100% { transform: translate(calc(50vw - 62px), calc(56vh - 111px)) rotate(2deg) scale(.73); opacity: 1; }
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="sea-world" id="world" aria-label="海上来信互动场景">
+    <div class="sky" aria-hidden="true"></div>
+    <div class="horizon" aria-hidden="true"></div>
+    <div class="ocean" aria-hidden="true"><div class="wave-field"></div></div>
+
+    <div class="brand" aria-label="漂流瓶"><span class="brand-mark" aria-hidden="true"></span>漂流瓶</div>
+
+    <div class="instruction" id="instruction" aria-live="polite">
+      <strong>远处，好像漂来了一只瓶子</strong>
+      <small>按住海面，向身边拖动</small>
+      <span class="pull-glyph" aria-hidden="true"></span>
+    </div>
+
+    <div class="bottle-wrap" id="bottle" aria-label="漂流瓶">
+      <svg class="bottle-svg" viewBox="0 0 152 270" role="img" aria-label="装有信纸的玻璃瓶">
+        <defs>
+          <linearGradient id="glass" x1="0" x2="1">
+            <stop offset="0" stop-color="#d7eeea" stop-opacity=".42"/>
+            <stop offset=".24" stop-color="#f2faf0" stop-opacity=".71"/>
+            <stop offset=".57" stop-color="#97c5c0" stop-opacity=".29"/>
+            <stop offset=".85" stop-color="#e7f2e8" stop-opacity=".55"/>
+            <stop offset="1" stop-color="#639792" stop-opacity=".34"/>
+          </linearGradient>
+          <linearGradient id="paperRoll" x1="0" y1="0" x2=".8" y2="1">
+            <stop stop-color="#fff1c9"/><stop offset="1" stop-color="#d2b684"/>
+          </linearGradient>
+          <filter id="glassShadow" x="-40%" y="-30%" width="180%" height="180%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur"/>
+            <feOffset dy="2" result="offset"/>
+            <feMerge><feMergeNode in="offset"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <g class="letter-roll">
+          <path d="M53 118c14-8 37-7 46 2l-7 96c-10 8-28 10-43 2z" fill="url(#paperRoll)" transform="rotate(3 75 170)"/>
+          <path d="M56 134c12 2 25 2 37-1M55 143c10 2 22 2 34-1M54 153c11 2 23 2 35 0" fill="none" stroke="#ac8f62" stroke-width="1" opacity=".54"/>
+          <path d="M50 176c18 5 31 4 46-2" fill="none" stroke="#a34e3f" stroke-width="5"/>
+          <circle cx="74" cy="176" r="8" fill="#b45b47"/><path d="M70 174l5 5 5-8" fill="none" stroke="#e0b18d" stroke-width="1.3"/>
+        </g>
+        <g class="bottle-glass">
+          <path d="M58 26h36v56c0 11 4 17 13 25 19 17 26 43 26 78v50c0 19-13 29-57 29s-57-10-57-29v-50c0-35 7-61 26-78 9-8 13-14 13-25z" fill="url(#glass)" stroke="#d9efea" stroke-width="2"/>
+          <path d="M39 129c-8 24-9 77-5 103 3 13 13 18 27 20" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".43"/>
+          <path d="M108 117c11 23 13 69 10 104" fill="none" stroke="#3c797a" stroke-width="2" stroke-linecap="round" opacity=".26"/>
+          <ellipse cx="76" cy="237" rx="48" ry="17" fill="#538b89" opacity=".18"/>
+          <path d="M56 77h40M57 66h38" stroke="#d9eeea" stroke-width="3" opacity=".62"/>
+        </g>
+        <g class="cork-piece">
+          <path d="M59 14h34l-3 48H62z" fill="#8f6841" stroke="#64482f" stroke-width="2"/>
+          <path d="M64 18l22 38M73 16l17 28M60 34l30 18M61 25l31 20" stroke="#b28a5b" stroke-width="2" opacity=".58"/>
+          <path d="M57 59h38v9H57z" fill="#315e5d" opacity=".86"/>
+        </g>
+      </svg>
+      <button class="cork-handle" id="cork" type="button" aria-label="向上拖动瓶塞打开瓶子">
+        <span class="cork-label">向上拖开瓶塞</span>
+      </button>
+      <i class="spark" style="--sx:-54px;--sy:-72px;--delay:.08s"></i>
+      <i class="spark" style="--sx:42px;--sy:-92px;--delay:.18s"></i>
+      <i class="spark" style="--sx:-23px;--sy:-115px;--delay:.28s"></i>
+      <i class="spark" style="--sx:67px;--sy:-55px;--delay:.12s"></i>
+    </div>
+
+    <div class="ripple" id="ripple" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+  </main>
+
+  <div class="dim" aria-hidden="true"></div>
+  <section class="reading" id="reading" aria-labelledby="letter-title">
+    <article class="paper" id="paper">
+      <header class="letter-meta">
+        <span>一封想找过来人的信</span>
+        <span class="sample-badge">体验示例 · 非真实匹配</span>
+      </header>
+      <h1 id="letter-title">第一次找实习，我总觉得自己还不够格。</h1>
+      <div class="letter-body">
+        <p>最近开始准备第一份产品实习。岗位要求里每一条都像是在说“你还没准备好”，投过几份没有回音，就更不敢继续了。</p>
+        <p>我想知道，你第一次投实习时也会这样吗？后来是哪一步，让你不再只盯着自己不会的东西？</p>
+      </div>
+      <div class="wanted"><strong>TA 想遇见：</strong>一位亲自经历过第一次实习求职受挫，后来继续投递并获得实习的人。只展示对方为这次来信允许披露的经历，不展示姓名、学校、公司或主页。</div>
+      <form class="reply-area" id="reply-form">
+        <label for="reply">说一句，当时的你也想听的话。</label>
+        <div class="reply-hints">可以从「当时我以为……」「后来我才发现……」开始</div>
+        <textarea id="reply" required placeholder="从你的真实经历开始，不必给出一个标准答案。"></textarea>
+        <div class="paper-actions">
+          <p class="privacy-note">这封演示回信只保存在当前浏览器，不会真实发送。回应与长期的「我走过的经历」彼此独立。</p>
+          <button class="send-button" id="send" type="submit" disabled>让瓶子回到海里</button>
+        </div>
+      </form>
+    </article>
+  </section>
+
+  <aside class="afterword" aria-live="polite">
+    <p>你的话已经随瓶子回到海上。</p>
+    <button class="again-button" id="again" type="button">再等一封来信</button>
+  </aside>
+
+  <div class="sr-only" id="status" aria-live="assertive"></div>
+
+  <script>
+    (() => {
+      const world = document.getElementById('world');
+      const bottle = document.getElementById('bottle');
+      const cork = document.getElementById('cork');
+      const reply = document.getElementById('reply');
+      const send = document.getElementById('send');
+      const form = document.getElementById('reply-form');
+      const ripple = document.getElementById('ripple');
+      const again = document.getElementById('again');
+      const status = document.getElementById('status');
+
+      let stage = 'approach';
+      let progress = 0;
+      let waterPointer = null;
+      let lastX = 0;
+      let lastY = 0;
+      let corkPointer = null;
+      let corkStartY = 0;
+      let rippleMade = false;
+
+      const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+      const mix = (from, to, amount) => from + (to - from) * amount;
+
+      function bottleSize() {
+        return innerWidth <= 620 ? { width: 125, height: 222 } : { width: 152, height: 270 };
+      }
+
+      function renderBottle() {
+        const size = bottleSize();
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const startX = innerWidth * .69;
+        const startY = innerHeight * .375;
+        const endX = innerWidth * .5;
+        const endY = innerHeight * .59;
+        const scale = mix(.105, innerWidth <= 620 ? .84 : .9, eased);
+        const angle = mix(31, -7, eased) + Math.sin(progress * Math.PI * 4) * (1 - progress) * 7;
+        const x = mix(startX, endX, eased) - size.width / 2;
+        const y = mix(startY, endY, eased) - size.height / 2;
+        bottle.style.transform = `translate3d(${x}px,${y}px,0) rotate(${angle}deg) scale(${scale})`;
+        document.documentElement.style.setProperty('--approach', progress.toFixed(3));
+        document.documentElement.style.setProperty('--shadow-scale', (.6 + progress * .4).toFixed(3));
+      }
+
+      function arrive() {
+        if (stage !== 'approach') return;
+        stage = 'ready';
+        progress = 1;
+        renderBottle();
+        world.classList.remove('is-dragging');
+        world.classList.add('ready');
+        bottle.classList.add('ready-bottle');
+        status.textContent = '瓶子已经来到面前，请向上拖开瓶塞。';
+        setTimeout(() => cork.focus({ preventScroll: true }), 450);
+      }
+
+      function waterDown(event) {
+        if (stage !== 'approach' || event.button > 0) return;
+        waterPointer = event.pointerId;
+        lastX = event.clientX;
+        lastY = event.clientY;
+        world.setPointerCapture(event.pointerId);
+        world.classList.add('is-dragging');
+      }
+
+      function waterMove(event) {
+        if (stage !== 'approach' || event.pointerId !== waterPointer) return;
+        const dx = event.clientX - lastX;
+        const dy = event.clientY - lastY;
+        lastX = event.clientX;
+        lastY = event.clientY;
+        progress = clamp(progress + (dy * .92 + Math.abs(dx) * .12) / Math.max(250, innerHeight * .44), 0, 1);
+        document.documentElement.style.setProperty('--drag-shift', `${progress * -85}px`);
+        document.documentElement.style.setProperty('--drag-reverse', `${progress * 29.75}px`);
+        renderBottle();
+        if (progress >= .985) arrive();
+      }
+
+      function waterUp(event) {
+        if (event.pointerId !== waterPointer) return;
+        waterPointer = null;
+        world.classList.remove('is-dragging');
+      }
+
+      function openBottle() {
+        if (stage !== 'ready') return;
+        stage = 'opening';
+        bottle.classList.remove('ready-bottle');
+        bottle.classList.add('opening');
+        status.textContent = '瓶塞已经打开，信纸正在展开。';
+        setTimeout(() => {
+          document.body.classList.add('reading-open');
+          stage = 'reading';
+          setTimeout(() => reply.focus({ preventScroll: true }), 1150);
+        }, 650);
+      }
+
+      cork.addEventListener('pointerdown', event => {
+        if (stage !== 'ready' || event.button > 0) return;
+        event.stopPropagation();
+        corkPointer = event.pointerId;
+        corkStartY = event.clientY;
+        cork.setPointerCapture(event.pointerId);
+      });
+      cork.addEventListener('pointermove', event => {
+        if (event.pointerId !== corkPointer || stage !== 'ready') return;
+        const lift = clamp(corkStartY - event.clientY, 0, 75);
+        document.querySelector('.cork-piece').style.transform = `translateY(${-lift}px) rotate(${-lift * .2}deg)`;
+        if (lift > 48) openBottle();
+      });
+      cork.addEventListener('pointerup', event => {
+        if (event.pointerId !== corkPointer) return;
+        corkPointer = null;
+        if (stage === 'ready') document.querySelector('.cork-piece').style.transform = '';
+      });
+      cork.addEventListener('click', event => {
+        if (event.detail === 0) openBottle();
+      });
+
+      reply.addEventListener('input', () => {
+        send.disabled = reply.value.trim().length < 6;
+      });
+
+      function saveReply(text) {
+        try {
+          const key = 'episode-sea-bottle-replies';
+          const history = JSON.parse(localStorage.getItem(key) || '[]');
+          history.push({ id: Date.now(), text, createdAt: new Date().toISOString(), demo: true });
+          localStorage.setItem(key, JSON.stringify(history));
+        } catch (_) {
+          status.textContent = '浏览器未允许保存；本次动画仍可继续。';
+        }
+      }
+
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        const text = reply.value.trim();
+        if (stage !== 'reading' || text.length < 6) return;
+        saveReply(text);
+        stage = 'returning';
+        document.body.classList.add('returning');
+        status.textContent = '回信已收好，瓶子正在落回海面。';
+        setTimeout(() => {
+          if (!rippleMade) {
+            rippleMade = true;
+            ripple.classList.add('run');
+          }
+        }, 1220);
+        setTimeout(() => {
+          document.body.classList.remove('reading-open');
+          document.body.classList.add('done');
+          stage = 'done';
+          again.focus({ preventScroll: true });
+        }, 2050);
+      });
+
+      again.addEventListener('click', () => {
+        stage = 'approach';
+        progress = 0;
+        rippleMade = false;
+        reply.value = '';
+        send.disabled = true;
+        document.body.classList.remove('done', 'returning', 'reading-open');
+        world.classList.remove('ready');
+        bottle.classList.remove('opening', 'ready-bottle');
+        document.querySelector('.cork-piece').style.transform = '';
+        ripple.classList.remove('run');
+        document.documentElement.style.setProperty('--drag-shift', '0px');
+        document.documentElement.style.setProperty('--drag-reverse', '0px');
+        renderBottle();
+        status.textContent = '海面恢复安静，远处又有一只瓶子。';
+      });
+
+      world.addEventListener('pointerdown', waterDown);
+      world.addEventListener('pointermove', waterMove);
+      world.addEventListener('pointerup', waterUp);
+      world.addEventListener('pointercancel', waterUp);
+      window.addEventListener('resize', renderBottle);
+      renderBottle();
+    })();
+  </script>
+</body>
+</html>
