@@ -249,6 +249,9 @@ func (r *Repository) LaunchBottle(ctx context.Context, ownerID, id string) (doma
 	}
 	defer tx.Rollback()
 
+	if err = lockUserTx(ctx, tx, ownerID); err != nil {
+		return domain.LaunchResult{}, err
+	}
 	bottle, err := getBottleTx(ctx, tx, ownerID, id, true)
 	if err != nil {
 		return domain.LaunchResult{}, err
@@ -260,15 +263,18 @@ func (r *Repository) LaunchBottle(ctx context.Context, ownerID, id string) (doma
 		return domain.LaunchResult{}, domain.NewProblem("INVALID_BOTTLE_STATE", "当前瓶子状态不能抛出", domain.ErrConflict)
 	}
 
+	var activeCount int
+	if err = tx.QueryRowContext(ctx, `SELECT COUNT(*) FROM active_search_slots WHERE user_id = ?`, ownerID).Scan(&activeCount); err != nil {
+		return domain.LaunchResult{}, fmt.Errorf("count active searches: %w", err)
+	}
+	if activeCount >= domain.MaxActiveSearches {
+		problem := domain.NewProblem("ACTIVE_BOTTLE_LIMIT_REACHED", "同时搜索的瓶子已达到 10 个", domain.ErrConflict)
+		problem.Details = map[string]any{"activeCount": activeCount, "limit": domain.MaxActiveSearches}
+		return domain.LaunchResult{}, problem
+	}
 	if _, err = tx.ExecContext(ctx, `INSERT INTO active_search_slots (user_id, bottle_id) VALUES (?, ?)`, ownerID, id); err != nil {
 		if isDuplicate(err) {
-			var activeID string
-			queryErr := tx.QueryRowContext(ctx, `SELECT bottle_id FROM active_search_slots WHERE user_id = ?`, ownerID).Scan(&activeID)
-			problem := domain.NewProblem("ACTIVE_BOTTLE_EXISTS", "已有一个瓶子正在寻找过来人", domain.ErrConflict)
-			if queryErr == nil {
-				problem.Details = map[string]any{"activeBottleId": activeID}
-			}
-			return domain.LaunchResult{}, problem
+			return domain.LaunchResult{}, domain.NewProblem("ACTIVE_BOTTLE_SLOT_CONFLICT", "瓶子的搜索名额状态冲突", domain.ErrConflict)
 		}
 		return domain.LaunchResult{}, fmt.Errorf("claim active search slot: %w", err)
 	}
@@ -361,6 +367,17 @@ func getBottleTx(ctx context.Context, tx *sql.Tx, ownerID, id string, lock bool)
 		return domain.Bottle{}, domain.ErrNotFound
 	}
 	return item, err
+}
+
+func lockUserTx(ctx context.Context, tx *sql.Tx, userID string) error {
+	var id string
+	if err := tx.QueryRowContext(ctx, `SELECT id FROM users WHERE id = ? FOR UPDATE`, userID).Scan(&id); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return domain.ErrNotFound
+		}
+		return fmt.Errorf("lock user search capacity: %w", err)
+	}
+	return nil
 }
 
 func isDuplicate(err error) bool {

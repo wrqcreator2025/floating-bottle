@@ -45,9 +45,11 @@ class DatabaseTests(unittest.TestCase):
                                   "SELECT episode_raw FROM bottles WHERE id='TEST_DB_BOTTLE_A';"),
                          '2\n你好 🌊')
 
-    def test_one_active_bottle_per_owner(self):
-        self.sql("INSERT INTO active_search_slots VALUES ('TEST_DB_OWNER','TEST_DB_BOTTLE_A',NOW());"
-                 "INSERT INTO active_search_slots VALUES ('TEST_DB_OWNER','TEST_DB_BOTTLE_B',NOW());", 1062)
+    def test_owner_can_hold_multiple_active_bottles(self):
+        self.assertEqual(self.sql(
+            "INSERT INTO active_search_slots VALUES ('TEST_DB_OWNER','TEST_DB_BOTTLE_A',NOW());"
+            "INSERT INTO active_search_slots VALUES ('TEST_DB_OWNER','TEST_DB_BOTTLE_B',NOW());"
+            "SELECT COUNT(*) FROM active_search_slots WHERE user_id='TEST_DB_OWNER';"), '2')
 
     def test_slot_cannot_claim_another_users_bottle(self):
         self.sql("INSERT INTO active_search_slots VALUES ('TEST_DB_READER_A','TEST_DB_BOTTLE_A',NOW());", 1452)

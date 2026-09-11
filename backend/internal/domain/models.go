@@ -11,6 +11,8 @@ var (
 	ErrConflict = errors.New("resource conflict")
 )
 
+const MaxActiveSearches = 10
+
 // Problem is a stable business error that the HTTP layer can safely expose.
 type Problem struct {
 	Code    string

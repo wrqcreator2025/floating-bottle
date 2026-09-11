@@ -59,7 +59,7 @@ docker compose run --rm migrate version
 
 - 业务 ID 统一为 `CHAR(26)` 裸 ULID，ASCII 二进制比较。Go 生成 ULID，API 若使用 `btl_`、`con_` 等前缀，由 repository/API 边界转换，不能直接把带前缀的字符串写入列。
 - InnoDB、utf8mb4、`utf8mb4_0900_ai_ci`；身份标识和幂等键按大小写精确匹配。时间使用 UTC `DATETIME(6)`；`updated_at` 统一由 MySQL 更新，应用不额外赋值。
-- `active_search_slots.user_id` 主键限制一人一个主动瓶子，复合外键防止占用别人的瓶子。同一个瓶子允许多个独立 connection；邀请按瓶子和接收者去重，retry 不重置累计投递人数。
+- `active_search_slots` 记录每个正在搜索的瓶子，复合主键允许一人持有多个名额，`bottle_id` 唯一且复合外键防止占用别人的瓶子。Go service 在锁定 `users` 行后计数，限制每人最多 10 个；数据库结构本身不使用触发器实现数量上限。同一个瓶子允许多个独立 connection；邀请按瓶子和接收者去重，retry 不重置累计投递人数。
 - 删除经历会将邀请的 `matched_experience_id` 置空，并保留邀请时的披露快照。其他核心外键默认限制删除，避免删除用户或瓶子时悄悄清空私人交流。
 - 聊天消息放 `messages(kind='chat')`，首封回信为 `kind='reply'`，共用连接内递增序号。聊天参与者从 connection 获取，无需另存身份。每连接一份邀请和一份会话；拒绝后的再邀请、关闭后的重开暂不提供，若契约扩展，再增加迁移。
 - `messages.delivery_status` 默认 `pending_moderation`。审核记录以资源类型、ID、内容版本唯一绑定，并保存最终文本 SHA-256。未通过、失败、复核中的内容不得送达。
@@ -71,7 +71,7 @@ docker compose run --rm migrate version
 
 外键和唯一索引负责数据关系，不能代替 service 的用户权限、状态检查和内容审核。
 
-1. 抛出瓶子：锁瓶子行，验证归属、目标确认、最终内容版本审核通过；同事务占用主动名额、更新瓶子状态、插入 outbox。
+1. 抛出瓶子：先锁用户行以串行化该用户的名额变更，再锁瓶子行，验证归属、目标确认、最终内容版本审核通过；统计名额少于 10 后，同事务占用名额、更新瓶子状态、插入 outbox。
 2. 接住邀请：条件更新 pending 且未过期的邀请，同事务建立对应 connection 和通知。不能取消其他接收者的连接。
 3. 发消息：锁 connection 行，验证参与者和屏蔽关系；聊天要求已接受邀请且 session 为 active。分配序号，保存待审核消息及 outbox；审核通过且版本/hash 仍一致后才送达和通知。查询只向对方返回已送达消息，原作者可见自己的待审核/被拒原稿。
 4. 接受聊天：先验证发起者是已收到回信的 seeker，只有 responder 可接受；同事务更新邀请并建 session。关闭/屏蔽后不能继续送达排队消息。

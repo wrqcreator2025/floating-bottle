@@ -9,12 +9,12 @@
 ## 1. 实现目标
 
 1. 严格实现 `/api/v1` 契约，不让前端根据数据库表结构猜测业务状态。
-2. 保证瓶子可重复创建且独立保存，但同一用户同时只有一个主动寻找中的瓶子。
+2. 保证瓶子可重复创建且独立保存、累计数量不限，但同一用户同时最多有 10 个主动寻找中的瓶子。
 3. 将瓶子、邀请、短连接和长期经历分开建模，禁止用一张大表承载所有状态。
 4. 支持异步匹配与通知，不把「抛出瓶子」伪装成同步实时找人。
 5. 保持代码和依赖简单，不为黑客松 MVP 引入 Redis、独立消息队列、微服务、分布式事务或复杂规则引擎。
 
-同一瓶子可同时被多人接住并分别回信。Bottle 与 Invitation、Connection 均为一对多；唯一主动寻找名额只限制瓶子数量。
+同一瓶子可同时被多人接住并分别回信。Bottle 与 Invitation、Connection 均为一对多；每用户 10 个主动寻找名额只限制并行搜索的瓶子数量。
 
 ## 2. 固定技术选择
 
@@ -98,7 +98,7 @@ backend/
 | 位置 | 校验范围 |
 | --- | --- |
 | HTTP 边界 | JSON 可解析、必填、字段类型、枚举、`docs/API.md` 中的长度上限 |
-| Service | 资源归属、当前状态是否允许此次转换、唯一主动寻找名额 |
+| Service | 资源归属、当前状态是否允许此次转换、每用户最多 10 个主动寻找名额 |
 | MySQL | `NOT NULL`、主键、外键、必要唯一索引和事务一致性 |
 | 内容理解层 | 是否属于经历问题、高风险分流、经历/观点条件拆分 |
 
@@ -119,7 +119,7 @@ backend/
 | `users` | 本地用户主体 | `id`, `external_subject`, `created_at`, `updated_at` |
 | `zhihu_integrations` | 用户的知乎授权与同步状态 | `user_id` PK, `oauth_token_ciphertext`, `oauth_expires_at`, `status`, `last_synced_at`, timestamps |
 | `bottles` | 发送者的求助瓶子 | `id`, `owner_id`, `episode_raw`, `episode_title`, `episode_confirmed`, `target_hint`, `target_rules`, `content_version`, `search_round`, `status`, `failure_reason`, `launched_at`, timestamps |
-| `active_search_slots` | 单用户唯一主动寻找名额 | `user_id` PK, `bottle_id` UNIQUE, `created_at` |
+| `active_search_slots` | 用户正在占用的主动寻找名额 | `(user_id, bottle_id)` PK, `bottle_id` UNIQUE, `created_at`；Go 事务限制每用户最多 10 行 |
 | `experiences` | 长期「我走过的经历」 | `id`, `owner_id`, `title`, `body`, `confirmed_by_user`, `receive_open`, `disclosure`, `source`, timestamps |
 | `match_invitations` | 一次瓶子投递给一位接收者 | `id`, `bottle_id`, `search_round`, `recipient_id`, `matched_experience_id`, `experience_snapshot`, `reason`, `status`, `expires_at`, `decided_at`, timestamps |
 | `connections` | 接住后建立的有限对话 | `id`, `bottle_id`, `invitation_id`, `seeker_id`, `responder_id`, `status`, `follow_up_used`, `closed_at`, timestamps |
@@ -193,7 +193,7 @@ match_failed / search_error → searching（retry）
 ```
 
 - 只有瓶子所有者可修改 `draft`。
-- `launch` 必须在一个事务中取得 `active_search_slots`、将瓶子转为 `searching`并写入 outbox 任务。
+- `launch` 必须在一个事务中锁定用户行、确认其 `active_search_slots` 少于 10、取得新名额、将瓶子转为 `searching` 并写入 outbox 任务。
 - 瓶子仅记录寻找状态，回信、追问和封存只更新各自连接。首次接住不停止其他投递、不释放主动寻找名额。
 - 瓶子进入 `completed`、`match_failed`、`search_error` 或 `paused` 时释放名额。暂停仅停止新增投递，已送达的未过期邀请仍可决策；已有连接照常交流。
 - 达到投递上限或候选耗尽且不存在 pending 邀请后，有过 accepted 邀请则 `completed`，否则 `match_failed`。仍有 pending 时保持 searching；paused 不因邀请决策自动恢复或结束，resume 后重新判断。
@@ -235,12 +235,14 @@ awaiting_first_reply → awaiting_follow_up → awaiting_second_reply → closed
 
 ### 8.1 抛出瓶子
 
-1. 为用户插入 `active_search_slots`。
-2. 将目标瓶子从 `draft` 更新为 `searching`。
-3. 写入 `outbox_jobs(type='match_bottle')`。
-4. 提交。
+1. 使用 `SELECT ... FOR UPDATE` 锁定发送者的 `users` 行，使同一用户的名额变更串行执行。
+2. 统计该用户的 `active_search_slots`；达到 10 时返回 `409 ACTIVE_BOTTLE_LIMIT_REACHED`。
+3. 插入当前瓶子的 `active_search_slots`。
+4. 将目标瓶子从 `draft` 更新为 `searching`。
+5. 写入 `outbox_jobs(type='match_bottle')`。
+6. 提交。
 
-插入名额的唯一键冲突时只在冲突分支读取现有名额：若指向同一 searching 瓶子，视为重复请求并返回当前成功结果；若指向其他瓶子，转换为 `409 ACTIVE_BOTTLE_EXISTS`。不在正常路径先查询再插入。
+同一用户的 launch、resume、retry 和释放名额操作必须遵守相同的“先锁用户行、再锁瓶子行”顺序，避免死锁，并防止两个并发请求同时越过上限。对已经 `searching` 的同一瓶重复请求仍视为幂等成功，不重复占用名额或创建任务。
 
 ### 8.2 接住邀请
 
@@ -262,7 +264,7 @@ awaiting_first_reply → awaiting_follow_up → awaiting_second_reply → closed
 ### 8.4 失败后重试
 
 1. 条件更新并锁定 `match_failed/search_error` 的瓶子。
-2. 插入 `active_search_slots`；唯一键冲突映射为 `409 ACTIVE_BOTTLE_EXISTS`。
+2. 锁定用户行并确认当前主动名额少于 10，再插入 `active_search_slots`；达到上限映射为 `409 ACTIVE_BOTTLE_LIMIT_REACHED`。
 3. 如请求包含新目标则更新目标，递增 `content_version`；始终递增 `search_round` 并清空 `failure_reason`。
 4. 将瓶子更新为 `searching`，写入新的 `match_bottle` outbox 任务并提交。
 
@@ -639,7 +641,7 @@ CI 最少执行：
 ## 22. 实现顺序
 
 1. 建立 Go 工程、MySQL migration、配置、健康检查和通用 JSON 错误。
-2. 实现长期经历 CRUD、瓶子草稿、抛出与唯一主动名额。
+2. 实现长期经历 CRUD、瓶子草稿、抛出与每用户最多 10 个主动名额。
 3. 实现 worker outbox、匹配邀请、接住/放行。
 4. 实现首封回信、瓶子柜和通知。
 5. 接入 AI 整理、目标经历拆分与内容分流。
