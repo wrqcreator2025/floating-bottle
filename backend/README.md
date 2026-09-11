@@ -1,6 +1,6 @@
-# 漂流瓶后端注释骨架
+# 漂流瓶后端
 
-当前只有 Go package 声明、中文职责注释和接口清单，没有函数、业务实现、SQL 或外部请求。尚未创建 go.mod、安装依赖或提供可运行服务。
+数据库已有 Docker 配置、22 张业务表的编号迁移和真实 MySQL 集成测试。无需单独安装 MySQL，启动与连接步骤见 [数据库交接](database/README.md)。Go 部分仍为注释骨架，尚无 go.mod 或可运行 HTTP 服务。
 
 ## 已确定的首版技术选型
 
@@ -10,7 +10,7 @@
 
 代码保持 `handler → service → repository → MySQL` 分层：Gin handler 只处理 HTTP 输入输出，业务规则放在 service，SQL 放在 repository。这样以后增加缓存或消息队列时不需要重写业务层。
 
-正式初始化时锁定 Go 和 MySQL driver 的具体版本，生成 go.mod/go.sum，并记录 migration 工具与安装、启动、构建和测试命令。当前阶段仅确定架构，不提前宣称服务可以运行。
+数据库锁定 MySQL 8.4.11 和 golang-migrate v4.18.3。Go 同学初始化模块时再锁定 Go 与 MySQL driver，生成 go.mod/go.sum。
 
 ## 文件入口
 
@@ -28,7 +28,8 @@
 | internal/auth/auth.go | 本应用身份与资源权限 |
 | internal/jobs/jobs.go | outbox 认领、重试和恢复 |
 | internal/config/config.go | 配置加载与密钥来源 |
-| migrations/README.md、tests/README.md | 数据迁移和验证规划 |
+| database/README.md、compose.yaml | 数据库启动、连接、字段与事务交接 |
+| migrations/、tests/test_database.py | 数据迁移与真实数据库验证 |
 
 调用关系：HTTP → service → repository；worker → jobs → service/matching。AI 与知乎适配器在事务外调用。校验按 HTTP 格式、service 归属与状态、数据库一致性分工，不逐层重复检查。
 

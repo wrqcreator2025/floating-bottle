@@ -1,0 +1,25 @@
+# Local credentials and database exports
+.env
+.env.*
+!.env.example
+*.sql.gz
+__pycache__/
+
+# Dependencies and generated build/test output
+node_modules/
+dist/
+test-results/
+playwright-report/
+coverage/
+
+# Local IDE/OS metadata
+.DS_Store
+Thumbs.db
+*:Zone.Identifier
+.vscode/
+.idea/
+
+# Workspace-only agent metadata
+.agents/
+.codex/
+AGENTS.md

@@ -12,7 +12,7 @@
 
 ## 查看网页与手机原型
 
-后端注释骨架位于 `backend/`，首版技术栈已确定为 Gin + MySQL。暂不引入 Redis、独立消息队列和微服务；必须异步执行的少量任务使用 MySQL 任务表持久化，不增加新的基础设施。模块职责及文档待同步事项见 [backend/README.md](backend/README.md)。当前没有后端业务实现或可运行命令。
+后端注释骨架位于 `backend/`，首版技术栈已确定为 Gin + MySQL。暂不引入 Redis、独立消息队列和微服务；必须异步执行的少量任务使用 MySQL 任务表持久化，不增加新的基础设施。模块职责及文档待同步事项见 [backend/README.md](backend/README.md)。数据库已补齐 Docker 启动、SQL 迁移与测试，见 [数据库接入说明](backend/database/README.md)；HTTP 业务服务仍待实现。
 
 当前三维海岛前端位于 `frontend/`，视觉基准为 `海岛漂流瓶-设计展示-03.png`。它使用 Three.js 实现海面、小岛、房屋、漂流瓶、瓶子柜和经历日记，提供桌面与手机交互。安装、运行、构建和测试命令见 `frontend/README.md`。
 
@@ -34,4 +34,4 @@ python3 -m http.server 8000 --bind 127.0.0.1
 
 ## 验证
 
-当前没有构建工具、依赖或自动化测试框架。已进行 HTML 解析、锚点完整性和 JavaScript 语法检查；尚未完成浏览器截图和真机验证。
+前端构建、数据测试和浏览器测试见 `frontend/README.md`。数据库使用真实 MySQL 集成测试，启动和验证命令见 [数据库交接](backend/database/README.md)。

@@ -1,9 +1,7 @@
-# Migration 规划
+# 数据库迁移
 
-当前不提供 SQL。正式实现时选定一种 migration 工具，再增加成对的编号 up/down 文件。
+使用 golang-migrate v4.18.3，MySQL 8.4.11 / InnoDB / utf8mb4 / UTC。
 
-先建立用户、瓶子、主动名额、长期经历；再建立邀请、连接、消息、反馈、通知；然后增加 outbox、活动画像、外部缓存与调用计数、经历建议、切片和知乎授权存储。
+在 backend 目录执行 `docker compose run --rm migrate` 应用全部未执行迁移；重复执行不会重复建表。`000001_initial.up.sql` 创建 22 张业务表，配对 down 文件按外键依赖逆序删除。
 
-匿名聊天邀请、会话和消息的 schema 随聊天契约同步确定。以连接区分参与者，保证同瓶多位回信者互相隔离。
-
-MySQL 8.x / InnoDB / utf8mb4 / UTC。迁移在部署时单独运行；生产演示数据不放 migration。
+迁移独立于 API 启动，不添加生产演示数据。后续新增成对编号文件，不修改已发布版本。完整启动、字段和事务约定见 [数据库交接](../database/README.md)。

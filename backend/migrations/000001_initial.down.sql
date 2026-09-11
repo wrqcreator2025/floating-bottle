@@ -1,0 +1,23 @@
+-- Destructive: only run on a disposable database or after a verified backup.
+DROP TABLE external_api_account_usage;
+DROP TABLE external_api_usage;
+DROP TABLE external_api_cache;
+DROP TABLE outbox_jobs;
+DROP TABLE experience_suggestion_jobs;
+DROP TABLE user_activity_profiles;
+DROP TABLE zhihu_integrations;
+DROP TABLE abuse_reports;
+DROP TABLE user_blocks;
+DROP TABLE moderation_reviews;
+DROP TABLE slice_drafts;
+DROP TABLE notifications;
+DROP TABLE connection_feedback;
+DROP TABLE chat_sessions;
+DROP TABLE chat_invitations;
+DROP TABLE messages;
+DROP TABLE connections;
+DROP TABLE match_invitations;
+DROP TABLE experiences;
+DROP TABLE active_search_slots;
+DROP TABLE bottles;
+DROP TABLE users;

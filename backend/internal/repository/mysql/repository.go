@@ -6,5 +6,6 @@
 // match_invitations(bottle_id,recipient_id)、connections(invitation_id)、
 // connections(bottle_id,responder_id)、messages(connection_id,sequence_no)。
 // 不得单独唯一约束 connections.bottle_id。
-// 缓存、调用计数与 outbox 同样放 MySQL；当前无 SQL 或连接实现。
+// 缓存、调用计数与 outbox 同样放 MySQL；schema 已在 migrations/ 实现。
+// 连接配置和事务交接见 database/README.md；本包的 Go 查询实现待后端补齐。
 package mysql
