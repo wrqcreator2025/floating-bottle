@@ -1,10 +1,123 @@
-// Package domain 保存业务对象、状态常量与错误语义。
-// Bottle：发送者问题、确认目标、content_version、search_round、寻找状态。
-// Experience：长期经历、本人确认、receive_open、disclosure，与瓶子独立。
-// Invitation：一个瓶子对一位接收者的邀请及到期时间。
-// Connection：一只瓶子联系的一对用户，独立回信、反馈、未读与封存。
-// ChatInvitation / ChatSession：收到回信后由发信者邀请，对方接受才可聊天。
-// 匿名聊天需求晚于文档的“一次追问”约束，详见 backend/README.md。
-// Notification、SliceDraft、ActivityProfile 与业务任务保存各自状态。
-// 未来使用明确 struct；当前不预写字段定义或通用 CRUD 抽象。
+// Package domain defines the business objects shared by services and adapters.
 package domain
+
+import (
+	"errors"
+	"time"
+)
+
+var (
+	ErrNotFound = errors.New("resource not found")
+	ErrConflict = errors.New("resource conflict")
+)
+
+// Problem is a stable business error that the HTTP layer can safely expose.
+type Problem struct {
+	Code    string
+	Message string
+	Details map[string]any
+	Cause   error
+}
+
+func (p *Problem) Error() string { return p.Message }
+func (p *Problem) Unwrap() error { return p.Cause }
+
+func NewProblem(code, message string, cause error) *Problem {
+	return &Problem{Code: code, Message: message, Cause: cause}
+}
+
+type Disclosure struct {
+	Summary   bool `json:"summary"`
+	TimeRange bool `json:"timeRange"`
+	Domain    bool `json:"domain"`
+}
+
+type Experience struct {
+	ID              string     `json:"id"`
+	Title           string     `json:"title"`
+	Body            string     `json:"body"`
+	ConfirmedByUser bool       `json:"confirmedByUser"`
+	ReceiveOpen     bool       `json:"receiveOpen"`
+	Disclosure      Disclosure `json:"disclosure"`
+	Source          string     `json:"source"`
+	CreatedAt       time.Time  `json:"createdAt"`
+	UpdatedAt       time.Time  `json:"updatedAt"`
+}
+
+type ExperiencePatch struct {
+	Title           *string
+	Body            *string
+	ConfirmedByUser *bool
+	ReceiveOpen     *bool
+	Disclosure      *Disclosure
+}
+
+type TargetRules struct {
+	RequiredExperiences  []string `json:"requiredExperiences"`
+	PreferredExperiences []string `json:"preferredExperiences"`
+	ViewpointPreferences []string `json:"viewpointPreferences"`
+}
+
+type Bottle struct {
+	ID               string
+	OwnerRole        string
+	EpisodeRaw       string
+	EpisodeTitle     string
+	EpisodeConfirmed bool
+	TargetHint       string
+	Target           TargetRules
+	Status           string
+	ContentVersion   uint
+	SearchRound      uint
+	FailureReason    string
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
+	LaunchedAt       *time.Time
+}
+
+type BottlePatch struct {
+	EpisodeRaw       *string
+	EpisodeTitle     *string
+	EpisodeConfirmed *bool
+	TargetHint       *string
+	Target           *TargetRules
+	SourceVersion    *uint
+}
+
+type BottleView struct {
+	ID        string `json:"id"`
+	OwnerRole string `json:"ownerRole"`
+	Episode   struct {
+		RawText   string `json:"rawText"`
+		Title     string `json:"title"`
+		Confirmed bool   `json:"confirmed"`
+	} `json:"episode"`
+	Target         TargetRules `json:"target"`
+	TargetHint     string      `json:"targetHint,omitempty"`
+	Status         string      `json:"status"`
+	ContentVersion uint        `json:"contentVersion"`
+	SearchRound    uint        `json:"searchRound"`
+	FailureReason  string      `json:"failureReason,omitempty"`
+	CreatedAt      time.Time   `json:"createdAt"`
+	UpdatedAt      time.Time   `json:"updatedAt"`
+	LaunchedAt     *time.Time  `json:"launchedAt"`
+}
+
+func ViewBottle(b Bottle) BottleView {
+	v := BottleView{
+		ID: b.ID, OwnerRole: b.OwnerRole, Target: b.Target, TargetHint: b.TargetHint,
+		Status: b.Status, ContentVersion: b.ContentVersion, SearchRound: b.SearchRound,
+		FailureReason: b.FailureReason, CreatedAt: b.CreatedAt, UpdatedAt: b.UpdatedAt,
+		LaunchedAt: b.LaunchedAt,
+	}
+	v.Episode.RawText = b.EpisodeRaw
+	v.Episode.Title = b.EpisodeTitle
+	v.Episode.Confirmed = b.EpisodeConfirmed
+	return v
+}
+
+type LaunchResult struct {
+	BottleID    string `json:"bottleId"`
+	Status      string `json:"status"`
+	Interaction string `json:"interaction"`
+}

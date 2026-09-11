@@ -1,6 +1,36 @@
 # 漂流瓶后端
 
-数据库已有 Docker 配置、22 张业务表的编号迁移和真实 MySQL 集成测试。无需单独安装 MySQL，启动与连接步骤见 [数据库交接](database/README.md)。Go 部分仍为注释骨架，尚无 go.mod 或可运行 HTTP 服务。
+数据库已有 Docker 配置、22 张业务表的编号迁移和真实 MySQL 集成测试。无需单独安装 MySQL，启动与连接步骤见 [数据库交接](database/README.md)。Go API 已完成第一批可运行能力：健康检查、开发身份、经历 CRUD、瓶子草稿、编辑、详情与抛出事务。
+
+## 启动 API
+
+先按数据库交接说明启动 MySQL 并执行迁移，再安装 Go 1.22 或更高版本。在 `backend/` 目录执行：
+
+```sh
+go mod tidy
+go test ./...
+go run ./cmd/api
+```
+
+旧版 `backend/.env` 若没有 API 配置，请补充：
+
+```dotenv
+APP_ENV=development
+HTTP_ADDR=:8080
+DEMO_AUTH_ENABLED=true
+CORS_ALLOWED_ORIGINS=http://localhost:5173
+```
+
+本地接口使用 `Authorization: Bearer demo.alice`。换成 `demo.bob` 即可模拟另一位用户。该模式只用于本地联调，配置层禁止在 `APP_ENV=production` 时开启。
+
+已实现路由：
+
+- `GET /healthz`、`GET /readyz`
+- `GET/POST /api/v1/experiences`
+- `PATCH/DELETE /api/v1/experiences/{experienceId}`
+- `POST /api/v1/bottles`
+- `GET/PATCH /api/v1/bottles/{bottleId}`
+- `POST /api/v1/bottles/{bottleId}/launch`
 
 ## 已确定的首版技术选型
 
@@ -16,9 +46,9 @@
 
 | 路径 | 阅读内容 |
 | --- | --- |
-| cmd/api/main.go | Gin HTTP 进程装配和退出顺序 |
+| cmd/api/main.go | Gin HTTP 进程装配和优雅退出 |
 | cmd/worker/main.go | 异步进程装配和退出顺序 |
-| internal/httpapi/routes.go、routes.md | 请求处理边界与现有 32 条业务路由 |
+| internal/httpapi/routes.go、routes.md | 已实现路由与后续业务路由清单 |
 | internal/service/ | 瓶子、接收、回信、聊天、经历、查询和切片用例 |
 | internal/domain/models.go | 业务对象与状态职责 |
 | internal/repository/mysql/repository.go | SQL、唯一约束和事务执行 |
@@ -43,4 +73,4 @@
 - OAuth 缺少 state 回传或其他可靠请求绑定时，仅凭会话 Cookie 与一次性事务不能防止授权码替换；应先确认平台支持的绑定机制。稳定知乎主体与 Token 持久化生命周期同样不能凭空补齐。
 - 上游额度查询针对 Access Secret 账号；应用多人共享 Secret 时需要共享总预算，不能将上游额度乘以本地用户数。
 
-本次保留这些差异的明确位置，不改写整份历史 PRD。注释骨架可直接逐模块审阅，但不代表后端功能已实现。
+本次保留这些差异的明确位置，不改写整份历史 PRD。尚未实现的 worker、匹配、回信、匿名聊天、AI 与知乎模块仍保留注释边界，不能视为可用功能。

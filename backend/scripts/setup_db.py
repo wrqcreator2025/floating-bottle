@@ -17,6 +17,10 @@ def main():
         f"MYSQL_DSN=drift_app:{password}@tcp(127.0.0.1:3307)/drift_bottle"
         "?charset=utf8mb4&parseTime=true&loc=UTC&time_zone=%27%2B00%3A00%27"
         "&timeout=5s&readTimeout=10s&writeTimeout=10s\n"
+        "APP_ENV=development\n"
+        "HTTP_ADDR=:8080\n"
+        "DEMO_AUTH_ENABLED=true\n"
+        "CORS_ALLOWED_ORIGINS=http://localhost:5173\n"
     )
     try:
         fd = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
