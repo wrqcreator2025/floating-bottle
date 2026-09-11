@@ -24,10 +24,8 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: backend/go.mod
-      - name: Resolve dependencies
-        run: go mod tidy
-      - name: Export module checksums
-        run: base64 -w0 go.sum
+      - name: Download dependencies
+        run: go mod download
       - name: Test
         run: go test ./...
       - name: Vet
